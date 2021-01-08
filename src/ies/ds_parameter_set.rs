@@ -1,29 +1,21 @@
-use super::{Display, IeError, InformationElement};
+use super::{Field, InformationElement};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct DsParameterSet {
-    bytes: Vec<u8>,
+    bytes: [u8; 1],
 }
 
 impl DsParameterSet {
-    pub const ID: u8 = 3;
     pub const NAME: &'static str = "DS Parameter Set";
+    pub const ID: u8 = 3;
     pub const LENGTH: usize = 1;
 
-    pub fn new(bytes: Vec<u8>) -> Result<DsParameterSet, IeError> {
-        if bytes.len() == Self::LENGTH {
-            Ok(DsParameterSet { bytes })
-        } else {
-            Err(IeError::InvalidLength {
-                ie_name: Self::NAME,
-                expected_length: Self::LENGTH,
-                actual_length: bytes.len(),
-            })
-        }
+    pub fn new(bytes: [u8; 1]) -> DsParameterSet {
+        DsParameterSet { bytes }
     }
 
     pub fn channel_number(&self) -> u8 {
-        self.bytes.get(0).unwrap_or(&0).clone()
+        self.bytes[0]
     }
 }
 
@@ -39,10 +31,12 @@ impl InformationElement for DsParameterSet {
     fn bytes(&self) -> &[u8] {
         &self.bytes
     }
-}
 
-impl Display for DsParameterSet {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "{}: Channel {}", Self::NAME, self.channel_number())
+    fn information_fields(&self) -> Vec<Field> {
+        vec![Field {
+            title: "Current Channel".to_string(),
+            value: self.channel_number().to_string(),
+            subfields: None,
+        }]
     }
 }

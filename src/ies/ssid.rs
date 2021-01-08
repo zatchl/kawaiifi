@@ -1,16 +1,22 @@
-use super::{Display, InformationElement};
+use super::{Field, InformationElement};
+use std::str;
+use std::str::Utf8Error;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Ssid {
     bytes: Vec<u8>,
 }
 
 impl Ssid {
-    pub const ID: u8 = 0;
     pub const NAME: &'static str = "SSID";
+    pub const ID: u8 = 0;
 
     pub fn new(bytes: Vec<u8>) -> Ssid {
         Ssid { bytes }
+    }
+
+    pub fn as_str(&self) -> Result<&str, Utf8Error> {
+        str::from_utf8(&self.bytes)
     }
 }
 
@@ -26,15 +32,12 @@ impl InformationElement for Ssid {
     fn bytes(&self) -> &[u8] {
         &self.bytes
     }
-}
 
-impl Display for Ssid {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(
-            f,
-            "{}: {}",
-            Ssid::NAME,
-            String::from_utf8_lossy(&self.bytes)
-        )
+    fn information_fields(&self) -> Vec<Field> {
+        vec![Field {
+            title: "SSID".to_string(),
+            value: self.as_str().unwrap_or_default().to_string(),
+            subfields: None,
+        }]
     }
 }

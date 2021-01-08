@@ -1,18 +1,22 @@
-use super::{Display, IeError, InformationElement};
+use super::{Field, IeError, InformationElement};
+use crate::{ChannelWidth, ChannelWidths};
+use bitvec::prelude::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct HtOperation {
-    bytes: Vec<u8>,
+    bits: BitVec<Lsb0, u8>,
 }
 
 impl HtOperation {
-    pub const ID: u8 = 61;
     pub const NAME: &'static str = "HT Operation";
+    pub const ID: u8 = 61;
     pub const LENGTH: usize = 22;
 
     pub fn new(bytes: Vec<u8>) -> Result<HtOperation, IeError> {
         if bytes.len() == Self::LENGTH {
-            Ok(HtOperation { bytes })
+            Ok(HtOperation {
+                bits: BitVec::from_vec(bytes),
+            })
         } else {
             Err(IeError::InvalidLength {
                 ie_name: Self::NAME,
@@ -33,7 +37,11 @@ impl InformationElement for HtOperation {
     }
 
     fn bytes(&self) -> &[u8] {
-        &self.bytes
+        &self.bits.as_raw_slice()
+    }
+
+    fn information_fields(&self) -> Vec<Field> {
+        Vec::new()
     }
 }
 

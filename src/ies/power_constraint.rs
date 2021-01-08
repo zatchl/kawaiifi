@@ -1,29 +1,21 @@
-use super::{Display, IeError, InformationElement};
+use super::{Field, InformationElement};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct PowerConstraint {
-    bytes: Vec<u8>,
+    bytes: [u8; 1],
 }
 
 impl PowerConstraint {
-    pub const ID: u8 = 32;
     pub const NAME: &'static str = "Power Constraint";
+    pub const ID: u8 = 32;
     pub const LENGTH: usize = 1;
 
-    pub fn new(bytes: Vec<u8>) -> Result<PowerConstraint, IeError> {
-        if bytes.len() == Self::LENGTH {
-            Ok(PowerConstraint { bytes })
-        } else {
-            Err(IeError::InvalidLength {
-                ie_name: Self::NAME,
-                expected_length: Self::LENGTH,
-                actual_length: bytes.len(),
-            })
-        }
+    pub fn new(bytes: [u8; 1]) -> PowerConstraint {
+        PowerConstraint { bytes }
     }
 
     pub fn power_constraint_db(&self) -> u8 {
-        self.bytes.get(0).unwrap_or(&0).clone()
+        self.bytes[0]
     }
 }
 
@@ -39,15 +31,12 @@ impl InformationElement for PowerConstraint {
     fn bytes(&self) -> &[u8] {
         &self.bytes
     }
-}
 
-impl Display for PowerConstraint {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(
-            f,
-            "{}: {} dB",
-            PowerConstraint::NAME,
-            self.power_constraint_db()
-        )
+    fn information_fields(&self) -> Vec<Field> {
+        vec![Field {
+            title: "Local Power Constraint".to_string(),
+            value: format!("{} dB", self.power_constraint_db()),
+            subfields: None,
+        }]
     }
 }

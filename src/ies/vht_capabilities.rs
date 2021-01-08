@@ -1,18 +1,21 @@
-use super::{Display, IeError, InformationElement};
+use super::{Field, IeError, InformationElement};
+use bitvec::prelude::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct VhtCapabilities {
-    bytes: Vec<u8>,
+    bits: BitVec<Lsb0, u8>,
 }
 
 impl VhtCapabilities {
-    pub const ID: u8 = 191;
     pub const NAME: &'static str = "VHT Capabilities";
+    pub const ID: u8 = 191;
     pub const LENGTH: usize = 12;
 
     pub fn new(bytes: Vec<u8>) -> Result<VhtCapabilities, IeError> {
         if bytes.len() == Self::LENGTH {
-            Ok(VhtCapabilities { bytes })
+            Ok(VhtCapabilities {
+                bits: BitVec::from_vec(bytes),
+            })
         } else {
             Err(IeError::InvalidLength {
                 ie_name: Self::NAME,
@@ -33,12 +36,13 @@ impl InformationElement for VhtCapabilities {
     }
 
     fn bytes(&self) -> &[u8] {
-        &self.bytes
+        self.bits.as_raw_slice()
+    }
+
+    fn information_fields(&self) -> Vec<Field> {
+        Vec::new()
     }
 }
 
-impl Display for VhtCapabilities {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "{}: {:?}", Self::NAME, self.bytes())
     }
 }

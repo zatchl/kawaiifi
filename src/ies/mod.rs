@@ -30,7 +30,6 @@ pub use mesh_id::MeshId;
 pub use power_constraint::PowerConstraint;
 pub use rsn::Rsn;
 pub use ssid::Ssid;
-pub use std::fmt::Display;
 pub use supported_rates::SupportedRates;
 pub use tim::Tim;
 pub use vendor_specific::VendorSpecific;
@@ -38,8 +37,10 @@ pub use vht_capabilities::VhtCapabilities;
 pub use vht_operation::VhtOperation;
 pub use wpa::Wpa;
 
+use crate::Field;
 use byteorder::ReadBytesExt;
 use std::io::{Cursor, Read};
+use std::{convert::TryInto, fmt::Display};
 use thiserror::Error;
 
 #[enum_dispatch]
@@ -50,10 +51,11 @@ pub trait InformationElement {
         None
     }
     fn bytes(&self) -> &[u8];
+    fn information_fields(&self) -> Vec<Field>;
 }
 
-#[enum_dispatch(InformationElement, Display)]
-#[derive(Debug)]
+#[enum_dispatch(InformationElement)]
+#[derive(Debug, Clone)]
 pub enum Ie {
     Antenna,
     BssLoad,
@@ -73,6 +75,16 @@ pub enum Ie {
     VhtCapabilities,
     VhtOperation,
     Wpa,
+}
+
+impl Display for Ie {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for field in self.information_fields() {
+            write!(f, "{}\r\n", field)?;
+        }
+
+        Ok(())
+    }
 }
 
 impl PartialEq for Ie {
