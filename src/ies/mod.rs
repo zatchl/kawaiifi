@@ -6,6 +6,7 @@ mod erp_info;
 mod extended_capabilities;
 mod ht_capabilities;
 mod ht_operation;
+mod mesh_id;
 mod power_constraint;
 mod rsn;
 mod ssid;
@@ -25,6 +26,7 @@ pub use erp_info::ErpInfo;
 pub use extended_capabilities::ExtendedCapabilities;
 pub use ht_capabilities::HtCapabilities;
 pub use ht_operation::HtOperation;
+pub use mesh_id::MeshId;
 pub use power_constraint::PowerConstraint;
 pub use rsn::Rsn;
 pub use ssid::Ssid;
@@ -58,6 +60,7 @@ pub enum Ie {
     ExtendedCapabilities,
     HtCapabilities,
     HtOperation,
+    MeshId,
     PowerConstraint,
     Rsn,
     Ssid,
