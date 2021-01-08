@@ -1,4 +1,4 @@
-mod country_info;
+mod country;
 mod ds_parameter_set;
 mod erp_info;
 mod extended_capabilities;
@@ -14,7 +14,7 @@ mod vht_capabilities;
 mod vht_operation;
 mod wpa;
 
-pub use country_info::CountryInfo;
+pub use country::Country;
 pub use ds_parameter_set::DsParameterSet;
 pub use enum_dispatch::enum_dispatch;
 pub use erp_info::ErpInfo;
@@ -46,7 +46,7 @@ pub trait InformationElement {
 #[enum_dispatch(InformationElement, Display)]
 #[derive(Debug)]
 pub enum Ie {
-    CountryInfo,
+    Country,
     DsParameterSet,
     ErpInfo,
     ExtendedCapabilities,
