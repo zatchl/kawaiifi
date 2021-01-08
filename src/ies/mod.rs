@@ -1,4 +1,5 @@
 mod antenna;
+mod bss_load;
 mod country;
 mod ds_parameter_set;
 mod erp_info;
@@ -16,6 +17,7 @@ mod vht_operation;
 mod wpa;
 
 pub use antenna::Antenna;
+pub use bss_load::BssLoad;
 pub use country::Country;
 pub use ds_parameter_set::DsParameterSet;
 pub use enum_dispatch::enum_dispatch;
@@ -49,6 +51,7 @@ pub trait InformationElement {
 #[derive(Debug)]
 pub enum Ie {
     Antenna,
+    BssLoad,
     Country,
     DsParameterSet,
     ErpInfo,
