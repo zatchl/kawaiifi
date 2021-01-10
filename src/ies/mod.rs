@@ -31,7 +31,7 @@ pub use mesh_id::MeshId;
 pub use power_constraint::PowerConstraint;
 pub use rsn::Rsn;
 pub use ssid::Ssid;
-pub use supported_rates::SupportedRates;
+pub use supported_rates::{DataRate, ExtendedSupportedRates, SupportedRates};
 pub use tim::Tim;
 pub use unknown::Unknown;
 pub use vendor_specific::VendorSpecific;
@@ -67,6 +67,7 @@ pub enum Ie {
     DsParameterSet,
     ErpInfo,
     ExtendedCapabilities,
+    ExtendedSupportedRates,
     HtCapabilities,
     HtOperation,
     MeshId,
