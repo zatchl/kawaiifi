@@ -7,6 +7,7 @@ mod extended_capabilities;
 mod ht_capabilities;
 mod ht_operation;
 mod mesh_id;
+mod overlapping_bss_scan_params;
 mod power_constraint;
 mod rsn;
 mod ssid;
@@ -28,6 +29,7 @@ pub use extended_capabilities::ExtendedCapabilities;
 pub use ht_capabilities::HtCapabilities;
 pub use ht_operation::HtOperation;
 pub use mesh_id::MeshId;
+pub use overlapping_bss_scan_params::OverlappingBssScanParams;
 pub use power_constraint::PowerConstraint;
 pub use rsn::Rsn;
 pub use ssid::Ssid;
@@ -71,6 +73,7 @@ pub enum Ie {
     HtCapabilities,
     HtOperation,
     MeshId,
+    OverlappingBssScanParams,
     PowerConstraint,
     Rsn,
     Ssid,
