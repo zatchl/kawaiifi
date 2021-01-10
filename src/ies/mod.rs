@@ -12,6 +12,7 @@ mod rsn;
 mod ssid;
 mod supported_rates;
 mod tim;
+mod unknown;
 mod vendor_specific;
 mod vht_capabilities;
 mod vht_operation;
@@ -32,6 +33,7 @@ pub use rsn::Rsn;
 pub use ssid::Ssid;
 pub use supported_rates::SupportedRates;
 pub use tim::Tim;
+pub use unknown::Unknown;
 pub use vendor_specific::VendorSpecific;
 pub use vht_capabilities::VhtCapabilities;
 pub use vht_operation::VhtOperation;
@@ -54,6 +56,8 @@ pub trait InformationElement {
     fn information_fields(&self) -> Vec<Field>;
 }
 
+pub const MAX_IE_ID: u8 = 255;
+
 #[enum_dispatch(InformationElement)]
 #[derive(Debug, Clone)]
 pub enum Ie {
@@ -71,10 +75,75 @@ pub enum Ie {
     Ssid,
     SupportedRates,
     Tim,
+    Unknown,
     VendorSpecific,
     VhtCapabilities,
     VhtOperation,
     Wpa,
+}
+
+impl Ie {
+    fn new(ie_data: Vec<u8>, ie_id: u8, ie_id_ext: Option<u8>) -> Result<Ie, IeError> {
+        Ok(match ie_id {
+            Antenna::ID => Ie::from(Antenna::new(ie_data)?),
+            BssLoad::ID => Ie::from(BssLoad::new(ie_data)?),
+            Country::ID => Ie::from(Country::new(ie_data)?),
+            DsParameterSet::ID => Ie::from(DsParameterSet::new(ie_data.try_into().map_err(
+                |ie_data: Vec<u8>| IeError::InvalidLength {
+                    ie_name: DsParameterSet::NAME,
+                    expected_length: DsParameterSet::LENGTH,
+                    actual_length: ie_data.len(),
+                },
+            )?)),
+            ErpInfo::ID => Ie::from(ErpInfo::new(ie_data.try_into().map_err(
+                |ie_data: Vec<u8>| IeError::InvalidLength {
+                    ie_name: ErpInfo::NAME,
+                    expected_length: ErpInfo::LENGTH,
+                    actual_length: ie_data.len(),
+                },
+            )?)),
+            ExtendedCapabilities::ID => Ie::from(ExtendedCapabilities::new(ie_data)),
+            ExtendedSupportedRates::ID => Ie::from(ExtendedSupportedRates::new(ie_data)),
+            HtCapabilities::ID => Ie::from(HtCapabilities::new(ie_data)?),
+            HtOperation::ID => Ie::from(HtOperation::new(ie_data)?),
+            MeshId::ID => Ie::from(MeshId::new(ie_data)),
+            OverlappingBssScanParams::ID => {
+                Ie::from(OverlappingBssScanParams::new(ie_data.try_into().map_err(
+                    |ie_data: Vec<u8>| IeError::InvalidLength {
+                        ie_name: OverlappingBssScanParams::NAME,
+                        expected_length: OverlappingBssScanParams::LENGTH,
+                        actual_length: ie_data.len(),
+                    },
+                )?))
+            }
+            PowerConstraint::ID => Ie::from(PowerConstraint::new(ie_data.try_into().map_err(
+                |ie_data: Vec<u8>| IeError::InvalidLength {
+                    ie_name: PowerConstraint::NAME,
+                    expected_length: PowerConstraint::LENGTH,
+                    actual_length: ie_data.len(),
+                },
+            )?)),
+            Rsn::ID => Ie::from(Rsn::new(ie_data)),
+            Ssid::ID => Ie::from(Ssid::new(ie_data)),
+            SupportedRates::ID => Ie::from(SupportedRates::new(ie_data)),
+            Tim::ID => Ie::from(Tim::new(ie_data)),
+            VendorSpecific::ID => {
+                if ie_data.starts_with(&Wpa::OUI) {
+                    Ie::from(Wpa::new(ie_data))
+                } else {
+                    Ie::from(VendorSpecific::new(ie_data))
+                }
+            }
+            VhtCapabilities::ID => Ie::from(VhtCapabilities::new(ie_data)?),
+            VhtOperation::ID => Ie::from(VhtOperation::new(ie_data)?),
+            MAX_IE_ID => match ie_id_ext {
+                Some(HeCapabilities::ID_EXT) => Ie::from(HeCapabilities::new(ie_data)),
+                Some(HeOperation::ID_EXT) => Ie::from(HeOperation::new(ie_data)),
+                _ => Ie::from(Unknown::new(ie_data, ie_id, ie_id_ext)),
+            },
+            _ => Ie::from(Unknown::new(ie_data, ie_id, ie_id_ext)),
+        })
+    }
 }
 
 impl Display for Ie {
@@ -124,79 +193,23 @@ pub fn from_bytes(bytes: &[u8]) -> Result<Vec<Ie>, IeError> {
         };
 
         // If the element ID is 255 then the next byte is the element ID extension
-        let ie_id_ext = {
-            if ie_id == 255 {
-                match bytes.read_u8() {
-                    Ok(ie_ext_id) => Some(ie_ext_id),
-                    _ => break,
-                }
-            } else {
-                None
+        let ie_id_ext = match ie_id {
+            MAX_IE_ID => bytes.read_u8().ok(),
+            _ => None,
+        };
+
+        // Bytes [2..ie_len+2] or [3..ie_len+3] is the data
+        let ie_data = {
+            let mut ie_data = vec![0; ie_len as usize];
+            match bytes.read_exact(&mut ie_data) {
+                Ok(_) => ie_data,
+                _ => break,
             }
         };
 
-        // Bytes [2..ie_len+2] is the data
-        let mut ie_data = vec![0; ie_len as usize];
-        // Break out of the loop if reading the bytes fails
-        if bytes.read_exact(&mut ie_data).is_err() {
-            break;
-        }
-
         // Using the IE's ID, try to create an information element and add it to the vector of IEs
         // If there's an error creating an information element, return the error
-        match (ie_id, ie_id_ext) {
-            (Antenna::ID, _) => ies.push(Ie::from(Antenna::new(ie_data)?)),
-            (BssLoad::ID, _) => ies.push(Ie::from(BssLoad::new(ie_data)?)),
-            (Country::ID, _) => ies.push(Ie::from(Country::new(ie_data)?)),
-            (DsParameterSet::ID, _) => {
-                ies.push(Ie::from(DsParameterSet::new(ie_data.try_into().map_err(
-                    |ie_data: Vec<u8>| IeError::InvalidLength {
-                        ie_name: DsParameterSet::NAME,
-                        expected_length: DsParameterSet::LENGTH,
-                        actual_length: ie_data.len(),
-                    },
-                )?)))
-            }
-            (ErpInfo::ID, _) => ies.push(Ie::from(ErpInfo::new(ie_data.try_into().map_err(
-                |ie_data: Vec<u8>| IeError::InvalidLength {
-                    ie_name: ErpInfo::NAME,
-                    expected_length: ErpInfo::LENGTH,
-                    actual_length: ie_data.len(),
-                },
-            )?))),
-            (ExtendedCapabilities::ID, _) => ies.push(Ie::from(ExtendedCapabilities::new(ie_data))),
-            (HeCapabilities::ID, Some(HeCapabilities::ID_EXT)) => {
-                ies.push(Ie::from(HeCapabilities::new(ie_data)))
-            }
-            (HeOperation::ID, Some(HeOperation::ID_EXT)) => {
-                ies.push(Ie::from(HeOperation::new(ie_data)?))
-            }
-            (HtCapabilities::ID, _) => ies.push(Ie::from(HtCapabilities::new(ie_data)?)),
-            (HtOperation::ID, _) => ies.push(Ie::from(HtOperation::new(ie_data)?)),
-            (MeshId::ID, _) => ies.push(Ie::from(MeshId::new(ie_data))),
-            (PowerConstraint::ID, _) => {
-                ies.push(Ie::from(PowerConstraint::new(ie_data.try_into().map_err(
-                    |ie_data: Vec<u8>| IeError::InvalidLength {
-                        ie_name: PowerConstraint::NAME,
-                        expected_length: PowerConstraint::LENGTH,
-                        actual_length: ie_data.len(),
-                    },
-                )?)))
-            }
-            (Rsn::ID, _) => ies.push(Ie::from(Rsn::new(ie_data))),
-            (Ssid::ID, _) => ies.push(Ie::from(Ssid::new(ie_data))),
-            (SupportedRates::ID, _) => ies.push(Ie::from(SupportedRates::new(ie_data))),
-            (Tim::ID, _) => ies.push(Ie::from(Tim::new(ie_data))),
-            (VendorSpecific::ID, _) if !ie_data.starts_with(&Wpa::OUI) => {
-                ies.push(Ie::from(VendorSpecific::new(ie_data)))
-            }
-            (VhtCapabilities::ID, _) => ies.push(Ie::from(VhtCapabilities::new(ie_data)?)),
-            (VhtOperation::ID, _) => ies.push(Ie::from(VhtOperation::new(ie_data)?)),
-            (Wpa::ID, _) if ie_data.starts_with(&Wpa::OUI) => {
-                ies.push(Ie::from(Wpa::new(ie_data).unwrap()))
-            }
-            _ => continue,
-        }
+        ies.push(Ie::new(ie_data, ie_id, ie_id_ext)?);
     }
 
     Ok(ies)
