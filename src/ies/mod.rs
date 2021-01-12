@@ -9,6 +9,7 @@ mod ht_operation;
 mod mesh_id;
 mod overlapping_bss_scan_params;
 mod power_constraint;
+mod rm_enabled_capabilities;
 mod rsn;
 mod ssid;
 mod supported_rates;
@@ -31,6 +32,7 @@ pub use ht_operation::HtOperation;
 pub use mesh_id::MeshId;
 pub use overlapping_bss_scan_params::OverlappingBssScanParams;
 pub use power_constraint::PowerConstraint;
+pub use rm_enabled_capabilities::RmEnabledCapabilities;
 pub use rsn::Rsn;
 pub use ssid::Ssid;
 pub use supported_rates::{DataRate, ExtendedSupportedRates, SupportedRates};
@@ -75,6 +77,7 @@ pub enum Ie {
     MeshId,
     OverlappingBssScanParams,
     PowerConstraint,
+    RmEnabledCapabilities,
     Rsn,
     Ssid,
     SupportedRates,
@@ -127,6 +130,7 @@ impl Ie {
                     actual_length: ie_data.len(),
                 },
             )?)),
+            RmEnabledCapabilities::ID => Ie::from(RmEnabledCapabilities::new(ie_data)?),
             Rsn::ID => Ie::from(Rsn::new(ie_data)),
             Ssid::ID => Ie::from(Ssid::new(ie_data)),
             SupportedRates::ID => Ie::from(SupportedRates::new(ie_data)),
