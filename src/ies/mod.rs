@@ -6,6 +6,7 @@ mod erp_info;
 mod extended_capabilities;
 mod ht_capabilities;
 mod ht_operation;
+mod measurement_pilot_transmission;
 mod mesh_id;
 mod overlapping_bss_scan_params;
 mod power_constraint;
@@ -30,6 +31,7 @@ pub use erp_info::ErpInfo;
 pub use extended_capabilities::ExtendedCapabilities;
 pub use ht_capabilities::HtCapabilities;
 pub use ht_operation::HtOperation;
+pub use measurement_pilot_transmission::MeasurementPilotTransmission;
 pub use mesh_id::MeshId;
 pub use overlapping_bss_scan_params::OverlappingBssScanParams;
 pub use power_constraint::PowerConstraint;
@@ -76,6 +78,7 @@ pub enum Ie {
     ExtendedSupportedRates,
     HtCapabilities,
     HtOperation,
+    MeasurementPilotTransmission,
     MeshId,
     OverlappingBssScanParams,
     PowerConstraint,
@@ -116,6 +119,9 @@ impl Ie {
             ExtendedSupportedRates::ID => Ie::from(ExtendedSupportedRates::new(ie_data)),
             HtCapabilities::ID => Ie::from(HtCapabilities::new(ie_data)?),
             HtOperation::ID => Ie::from(HtOperation::new(ie_data)?),
+            MeasurementPilotTransmission::ID => {
+                Ie::from(MeasurementPilotTransmission::new(ie_data)?)
+            }
             MeshId::ID => Ie::from(MeshId::new(ie_data)),
             OverlappingBssScanParams::ID => {
                 Ie::from(OverlappingBssScanParams::new(ie_data.try_into().map_err(
