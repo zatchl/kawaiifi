@@ -6,6 +6,7 @@ mod erp_info;
 mod extended_capabilities;
 mod ht_capabilities;
 mod ht_operation;
+mod ibss_parameter_set;
 mod measurement_pilot_transmission;
 mod mesh_id;
 mod overlapping_bss_scan_params;
@@ -31,6 +32,7 @@ pub use erp_info::ErpInfo;
 pub use extended_capabilities::ExtendedCapabilities;
 pub use ht_capabilities::HtCapabilities;
 pub use ht_operation::HtOperation;
+pub use ibss_parameter_set::IbssParameterSet;
 pub use measurement_pilot_transmission::MeasurementPilotTransmission;
 pub use mesh_id::MeshId;
 pub use overlapping_bss_scan_params::OverlappingBssScanParams;
@@ -78,6 +80,7 @@ pub enum Ie {
     ExtendedSupportedRates,
     HtCapabilities,
     HtOperation,
+    IbssParameterSet,
     MeasurementPilotTransmission,
     MeshId,
     OverlappingBssScanParams,
@@ -119,6 +122,13 @@ impl Ie {
             ExtendedSupportedRates::ID => Ie::from(ExtendedSupportedRates::new(ie_data)),
             HtCapabilities::ID => Ie::from(HtCapabilities::new(ie_data)?),
             HtOperation::ID => Ie::from(HtOperation::new(ie_data)?),
+            IbssParameterSet::ID => Ie::from(IbssParameterSet::new(ie_data.try_into().map_err(
+                |ie_data: Vec<u8>| IeError::InvalidLength {
+                    ie_name: IbssParameterSet::NAME,
+                    expected_length: IbssParameterSet::LENGTH,
+                    actual_length: ie_data.len(),
+                },
+            )?)),
             MeasurementPilotTransmission::ID => {
                 Ie::from(MeasurementPilotTransmission::new(ie_data)?)
             }
