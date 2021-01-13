@@ -14,6 +14,7 @@ mod rsn;
 mod ssid;
 mod supported_rates;
 mod tim;
+mod transmit_power_envelope;
 mod unknown;
 mod vendor_specific;
 mod vht_capabilities;
@@ -37,6 +38,7 @@ pub use rsn::Rsn;
 pub use ssid::Ssid;
 pub use supported_rates::{DataRate, ExtendedSupportedRates, SupportedRates};
 pub use tim::Tim;
+pub use transmit_power_envelope::TransmitPowerEnvelope;
 pub use unknown::Unknown;
 pub use vendor_specific::VendorSpecific;
 pub use vht_capabilities::VhtCapabilities;
@@ -82,6 +84,7 @@ pub enum Ie {
     Ssid,
     SupportedRates,
     Tim,
+    TransmitPowerEnvelope,
     Unknown,
     VendorSpecific,
     VhtCapabilities,
@@ -135,6 +138,7 @@ impl Ie {
             Ssid::ID => Ie::from(Ssid::new(ie_data)),
             SupportedRates::ID => Ie::from(SupportedRates::new(ie_data)),
             Tim::ID => Ie::from(Tim::new(ie_data)),
+            TransmitPowerEnvelope::ID => Ie::from(TransmitPowerEnvelope::new(ie_data)?),
             VendorSpecific::ID => {
                 if ie_data.starts_with(&Wpa::OUI) {
                     Ie::from(Wpa::new(ie_data))
