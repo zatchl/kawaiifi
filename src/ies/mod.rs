@@ -8,6 +8,7 @@ mod ht_capabilities;
 mod ht_operation;
 mod ibss_parameter_set;
 mod measurement_pilot_transmission;
+mod mesh_configuration;
 mod mesh_id;
 mod overlapping_bss_scan_params;
 mod power_constraint;
@@ -34,6 +35,7 @@ pub use ht_capabilities::HtCapabilities;
 pub use ht_operation::HtOperation;
 pub use ibss_parameter_set::IbssParameterSet;
 pub use measurement_pilot_transmission::MeasurementPilotTransmission;
+pub use mesh_configuration::MeshConfiguration;
 pub use mesh_id::MeshId;
 pub use overlapping_bss_scan_params::OverlappingBssScanParams;
 pub use power_constraint::PowerConstraint;
@@ -82,6 +84,7 @@ pub enum Ie {
     HtOperation,
     IbssParameterSet,
     MeasurementPilotTransmission,
+    MeshConfiguration,
     MeshId,
     OverlappingBssScanParams,
     PowerConstraint,
@@ -132,6 +135,7 @@ impl Ie {
             MeasurementPilotTransmission::ID => {
                 Ie::from(MeasurementPilotTransmission::new(ie_data)?)
             }
+            MeshConfiguration::ID => Ie::from(MeshConfiguration::new(ie_data)?),
             MeshId::ID => Ie::from(MeshId::new(ie_data)),
             OverlappingBssScanParams::ID => {
                 Ie::from(OverlappingBssScanParams::new(ie_data.try_into().map_err(
