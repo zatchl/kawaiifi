@@ -346,7 +346,6 @@ impl InformationElement for ExtendedCapabilities {
             fields.push(Field::new(
                 "20/40 BSS Coexistence Management Support",
                 twenty_forty_coexistence,
-                None,
             ));
         }
 
@@ -354,171 +353,148 @@ impl InformationElement for ExtendedCapabilities {
             fields.push(Field::new(
                 "Extended Channel Switching",
                 extended_channel_switching,
-                None,
             ));
         }
 
         if let Some(psmp_capability) = self.psmp_capability() {
-            fields.push(Field::new("PSMP Capability", psmp_capability, None));
+            fields.push(Field::new("PSMP Capability", psmp_capability));
         }
 
         if let Some(spsmp_support) = self.spsmp_support() {
-            fields.push(Field::new("S-PSMP Support", spsmp_support, None));
+            fields.push(Field::new("S-PSMP Support", spsmp_support));
         }
 
         if let Some(event) = self.event() {
-            fields.push(Field::new("Event", event, None));
+            fields.push(Field::new("Event", event));
         }
 
         if let Some(diagnostics) = self.diagnostics() {
-            fields.push(Field::new("Diagnostics", diagnostics, None));
+            fields.push(Field::new("Diagnostics", diagnostics));
         }
 
         if let Some(multicast_diagnostics) = self.multicast_diagnostics() {
-            fields.push(Field::new(
-                "Multicast Diagnostics",
-                multicast_diagnostics,
-                None,
-            ));
+            fields.push(Field::new("Multicast Diagnostics", multicast_diagnostics));
         }
 
         if let Some(location_tracking) = self.location_tracking() {
-            fields.push(Field::new("Location Tracking", location_tracking, None));
+            fields.push(Field::new("Location Tracking", location_tracking));
         }
 
         if let Some(fms) = self.fms() {
-            fields.push(Field::new("FMS", fms, None));
+            fields.push(Field::new("FMS", fms));
         }
 
         if let Some(proxy_arp_service) = self.proxy_arp_service() {
-            fields.push(Field::new("Proxy ARP Service", proxy_arp_service, None));
+            fields.push(Field::new("Proxy ARP Service", proxy_arp_service));
         }
 
         if let Some(collocated_interference_reporting) = self.collocated_interference_reporting() {
             fields.push(Field::new(
                 "Collocated Interference Reporting",
                 collocated_interference_reporting,
-                None,
             ));
         }
 
         if let Some(civic_location) = self.civic_location() {
-            fields.push(Field::new("Civic Location", civic_location, None));
+            fields.push(Field::new("Civic Location", civic_location));
         }
 
         if let Some(geospatial_location) = self.geospatial_location() {
-            fields.push(Field::new("Geospatial Location", geospatial_location, None));
+            fields.push(Field::new("Geospatial Location", geospatial_location));
         }
 
         if let Some(tfs) = self.tfs() {
-            fields.push(Field::new("TFS", tfs, None));
+            fields.push(Field::new("TFS", tfs));
         }
 
         if let Some(wnm_sleep_mode) = self.wnm_sleep_mode() {
-            fields.push(Field::new("WNM Sleep Mode", wnm_sleep_mode, None));
+            fields.push(Field::new("WNM Sleep Mode", wnm_sleep_mode));
         }
 
         if let Some(tim_broadcast) = self.tim_broadcast() {
-            fields.push(Field::new("TIM Broadcast", tim_broadcast, None));
+            fields.push(Field::new("TIM Broadcast", tim_broadcast));
         }
 
         if let Some(bss_transition) = self.bss_transition() {
-            fields.push(Field::new("BSS Transition", bss_transition, None));
+            fields.push(Field::new("BSS Transition", bss_transition));
         }
 
         if let Some(qos_traffic_capability) = self.qos_traffic_capability() {
-            fields.push(Field::new(
-                "QoS Traffic Capability",
-                qos_traffic_capability,
-                None,
-            ));
+            fields.push(Field::new("QoS Traffic Capability", qos_traffic_capability));
         }
 
         if let Some(ac_station_count) = self.ac_station_count() {
-            fields.push(Field::new("AC Station Count", ac_station_count, None));
+            fields.push(Field::new("AC Station Count", ac_station_count));
         }
 
         if let Some(multiple_bssid) = self.multiple_bssid() {
-            fields.push(Field::new("Multiple BSSID", multiple_bssid, None));
+            fields.push(Field::new("Multiple BSSID", multiple_bssid));
         }
 
         if let Some(timing_measurement) = self.timing_measurement() {
-            fields.push(Field::new("Timing Measurement", timing_measurement, None));
+            fields.push(Field::new("Timing Measurement", timing_measurement));
         }
 
         if let Some(channel_usage) = self.channel_usage() {
-            fields.push(Field::new("Channel Usage", channel_usage, None));
+            fields.push(Field::new("Channel Usage", channel_usage));
         }
 
         if let Some(ssid_list) = self.ssid_list() {
-            fields.push(Field::new("SSID List", ssid_list, None));
+            fields.push(Field::new("SSID List", ssid_list));
         }
 
         if let Some(dms) = self.dms() {
-            fields.push(Field::new("DMS", dms, None));
+            fields.push(Field::new("DMS", dms));
         }
 
         if let Some(utc_tsf_offset) = self.utc_tsf_offset() {
-            fields.push(Field::new("UTC TSF Offset", utc_tsf_offset, None));
+            fields.push(Field::new("UTC TSF Offset", utc_tsf_offset));
         }
 
         if let Some(tpu_buffer_sta_support) = self.tpu_buffer_sta_support() {
-            fields.push(Field::new(
-                "TPU Buffer STA Support",
-                tpu_buffer_sta_support,
-                None,
-            ));
+            fields.push(Field::new("TPU Buffer STA Support", tpu_buffer_sta_support));
         }
 
         if let Some(tdls_peer_psm_support) = self.tdls_peer_psm_support() {
-            fields.push(Field::new(
-                "TDLS Peer PSM Support",
-                tdls_peer_psm_support,
-                None,
-            ));
+            fields.push(Field::new("TDLS Peer PSM Support", tdls_peer_psm_support));
         }
 
         if let Some(tdls_channel_switching) = self.tdls_channel_switching() {
-            fields.push(Field::new(
-                "TDLS Channel Switching",
-                tdls_channel_switching,
-                None,
-            ));
+            fields.push(Field::new("TDLS Channel Switching", tdls_channel_switching));
         }
 
         if let Some(interworking) = self.interworking() {
-            fields.push(Field::new("Interworking", interworking, None));
+            fields.push(Field::new("Interworking", interworking));
         }
 
         if let Some(qos_map) = self.qos_map() {
-            fields.push(Field::new("QoS Map", qos_map, None));
+            fields.push(Field::new("QoS Map", qos_map));
         }
 
         if let Some(ebr) = self.ebr() {
-            fields.push(Field::new("EBR", ebr, None));
+            fields.push(Field::new("EBR", ebr));
         }
 
         if let Some(sspn_interface) = self.sspn_interface() {
-            fields.push(Field::new("SSPN Interface", sspn_interface, None));
+            fields.push(Field::new("SSPN Interface", sspn_interface));
         }
 
         if let Some(msgcf_capability) = self.msgcf_capability() {
-            fields.push(Field::new("MSGCF Capability", msgcf_capability, None));
+            fields.push(Field::new("MSGCF Capability", msgcf_capability));
         }
 
         if let Some(tdls_support) = self.tdls_support() {
-            fields.push(Field::new("TDLS Support", tdls_support, None));
+            fields.push(Field::new("TDLS Support", tdls_support));
         }
 
         if let Some(tdls_prohibited) = self.tdls_prohibited() {
-            fields.push(Field::new("TDLS Prohibited", tdls_prohibited, None));
+            fields.push(Field::new("TDLS Prohibited", tdls_prohibited));
         }
 
         if let Some(tdls_channel_switching_prohibited) = self.tdls_channel_switching_prohibited() {
             fields.push(Field::new(
                 "TDLS Channel Switching Prohibited",
                 tdls_channel_switching_prohibited,
-                None,
             ));
         }
 
@@ -526,7 +502,6 @@ impl InformationElement for ExtendedCapabilities {
             fields.push(Field::new(
                 "Reject Unadmitted Frame",
                 reject_unadmitted_frame,
-                None,
             ));
         }
 
@@ -534,71 +509,68 @@ impl InformationElement for ExtendedCapabilities {
             fields.push(Field::new(
                 "Service Interval Granularity",
                 format!("{} ms", service_interval_granularity_ms),
-                None,
             ));
         }
 
         if let Some(identifier_location) = self.identifier_location() {
-            fields.push(Field::new("Identifier Location", identifier_location, None));
+            fields.push(Field::new("Identifier Location", identifier_location));
         }
 
         if let Some(uapsd_coexistence) = self.uapsd_coexistence() {
-            fields.push(Field::new("U-APSD Coexistence", uapsd_coexistence, None));
+            fields.push(Field::new("U-APSD Coexistence", uapsd_coexistence));
         }
 
         if let Some(wnm_notification) = self.wnm_notification() {
-            fields.push(Field::new("WNM Notification", wnm_notification, None));
+            fields.push(Field::new("WNM Notification", wnm_notification));
         }
 
         if let Some(qab_capability) = self.qab_capability() {
-            fields.push(Field::new("QAB Capability", qab_capability, None));
+            fields.push(Field::new("QAB Capability", qab_capability));
         }
 
         if let Some(utf8_ssid) = self.utf8_ssid() {
-            fields.push(Field::new("UTF-8 SSID", utf8_ssid, None));
+            fields.push(Field::new("UTF-8 SSID", utf8_ssid));
         }
 
         if let Some(qmf_activated) = self.qmf_activated() {
-            fields.push(Field::new("QMF Activated", qmf_activated, None));
+            fields.push(Field::new("QMF Activated", qmf_activated));
         }
 
         if let Some(qmf_reconfiguration_activated) = self.qmf_reconfiguration_activated() {
             fields.push(Field::new(
                 "QMF Reconfiguration Activated",
                 qmf_reconfiguration_activated,
-                None,
             ));
         }
 
         if let Some(robust_av_streaming) = self.robust_av_streaming() {
-            fields.push(Field::new("Robust AV Streaming", robust_av_streaming, None));
+            fields.push(Field::new("Robust AV Streaming", robust_av_streaming));
         }
 
         if let Some(advanced_gcr) = self.advanced_gcr() {
-            fields.push(Field::new("Advanced GCR", advanced_gcr, None));
+            fields.push(Field::new("Advanced GCR", advanced_gcr));
         }
 
         if let Some(mesh_gcr) = self.mesh_gcr() {
-            fields.push(Field::new("Mesh GCR", mesh_gcr, None));
+            fields.push(Field::new("Mesh GCR", mesh_gcr));
         }
 
         if let Some(scs) = self.scs() {
-            fields.push(Field::new("SCS", scs, None));
+            fields.push(Field::new("SCS", scs));
         }
 
         if let Some(qload_report) = self.qload_report() {
-            fields.push(Field::new("QLoad Report", qload_report, None));
+            fields.push(Field::new("QLoad Report", qload_report));
         }
 
         if let Some(alternate_edca) = self.alternate_edca() {
-            fields.push(Field::new("Alternate EDCA", alternate_edca, None));
+            fields.push(Field::new("Alternate EDCA", alternate_edca));
         }
 
         if let Some(unprotected_txop_negotiation) = self.unprotected_txop_negotiation() {
             fields.push(Field::new(
                 "Unprotected TXOP Negotiation",
                 unprotected_txop_negotiation,
-                None,
             ));
         }
 
@@ -606,31 +578,21 @@ impl InformationElement for ExtendedCapabilities {
             fields.push(Field::new(
                 "Protected TXOP Negotiation",
                 protected_txop_negotiation,
-                None,
             ));
         }
 
         if let Some(protected_qload_report) = self.protected_qload_report() {
-            fields.push(Field::new(
-                "Protected QLoad Report",
-                protected_qload_report,
-                None,
-            ));
+            fields.push(Field::new("Protected QLoad Report", protected_qload_report));
         }
 
         if let Some(tdls_wider_bandwidth) = self.tdls_wider_bandwidth() {
-            fields.push(Field::new(
-                "TDLS Wider Bandwidth",
-                tdls_wider_bandwidth,
-                None,
-            ));
+            fields.push(Field::new("TDLS Wider Bandwidth", tdls_wider_bandwidth));
         }
 
         if let Some(operating_mode_notification) = self.operating_mode_notification() {
             fields.push(Field::new(
                 "Operating Mode Notification",
                 operating_mode_notification,
-                None,
             ));
         }
 
@@ -638,7 +600,6 @@ impl InformationElement for ExtendedCapabilities {
             fields.push(Field::new(
                 "Max Number Of MSDUs In A-MSDU",
                 max_msdus_in_amsdu,
-                None,
             ));
         }
 
@@ -646,7 +607,6 @@ impl InformationElement for ExtendedCapabilities {
             fields.push(Field::new(
                 "Channel Schedule Management",
                 channel_schedule_management,
-                None,
             ));
         }
 
@@ -655,7 +615,6 @@ impl InformationElement for ExtendedCapabilities {
             fields.push(Field::new(
                 "Geodatabase Inband Enabling Signal",
                 geodatabase_inband_enabling_signal,
-                None,
             ));
         }
 
@@ -663,19 +622,17 @@ impl InformationElement for ExtendedCapabilities {
             fields.push(Field::new(
                 "Network Channel Control",
                 network_channel_control,
-                None,
             ));
         }
 
         if let Some(white_space_map) = self.white_space_map() {
-            fields.push(Field::new("White Space Map", white_space_map, None));
+            fields.push(Field::new("White Space Map", white_space_map));
         }
 
         if let Some(channel_availability_query) = self.channel_availability_query() {
             fields.push(Field::new(
                 "Channel Availability Query",
                 channel_availability_query,
-                None,
             ));
         }
 
@@ -683,7 +640,6 @@ impl InformationElement for ExtendedCapabilities {
             fields.push(Field::new(
                 "Fine Timing Measurement Responder",
                 fine_timing_measurement_responder,
-                None,
             ));
         }
 
@@ -691,7 +647,6 @@ impl InformationElement for ExtendedCapabilities {
             fields.push(Field::new(
                 "Fine Timing Measurement Initiator",
                 fine_timing_measurement_initiator,
-                None,
             ));
         }
 
@@ -701,7 +656,6 @@ impl InformationElement for ExtendedCapabilities {
             fields.push(Field::new(
                 "Extended Spectrum Management Capable",
                 extended_spectrum_management_capable,
-                None,
             ));
         }
 
@@ -709,7 +663,6 @@ impl InformationElement for ExtendedCapabilities {
             fields.push(Field::new(
                 "Future Channel Guidance",
                 future_channel_guidance,
-                None,
             ));
         }
 

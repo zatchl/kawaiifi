@@ -167,11 +167,10 @@ impl InformationElement for Country {
 
     fn information_fields(&self) -> Vec<Field> {
         vec![
-            Field::new("Country Code", self.country_code(), None),
+            Field::new("Country Code", self.country_code()),
             Field::new(
                 "Environment",
                 self.environment().unwrap_or(Environment::Any),
-                None,
             ),
         ]
     }

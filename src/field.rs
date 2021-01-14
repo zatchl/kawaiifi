@@ -8,11 +8,23 @@ pub struct Field {
 }
 
 impl Field {
-    pub fn new(title: impl Display, value: impl Display, subfields: Option<Vec<Field>>) -> Field {
+    pub fn new(title: impl Display, value: impl Display) -> Field {
         Field {
             title: title.to_string(),
             value: value.to_string(),
-            subfields,
+            subfields: None,
+        }
+    }
+
+    pub fn with_subfields(
+        title: impl Display,
+        value: impl Display,
+        subfields: Vec<Field>,
+    ) -> Field {
+        Field {
+            title: title.to_string(),
+            value: value.to_string(),
+            subfields: Some(subfields),
         }
     }
 

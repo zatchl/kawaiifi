@@ -41,6 +41,6 @@ impl InformationElement for Antenna {
     }
 
     fn information_fields(&self) -> Vec<Field> {
-        vec![Field::new("Antenna ID", self.antenna_id(), None)]
+        vec![Field::new("Antenna ID", self.antenna_id())]
     }
 }

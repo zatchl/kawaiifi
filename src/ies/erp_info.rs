@@ -45,9 +45,9 @@ impl InformationElement for ErpInfo {
 
     fn information_fields(&self) -> Vec<Field> {
         vec![
-            Field::new("Non-ERP Present", self.non_erp_present(), None),
-            Field::new("Use Protection", self.use_protection(), None),
-            Field::new("Barker Preamble Mode", self.barker_preamble_mode(), None),
+            Field::new("Non-ERP Present", self.non_erp_present()),
+            Field::new("Use Protection", self.use_protection()),
+            Field::new("Barker Preamble Mode", self.barker_preamble_mode()),
         ]
     }
 }

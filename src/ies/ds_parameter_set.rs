@@ -33,6 +33,6 @@ impl InformationElement for DsParameterSet {
     }
 
     fn information_fields(&self) -> Vec<Field> {
-        vec![Field::new("Current Channel", self.channel_number(), None)]
+        vec![Field::new("Current Channel", self.channel_number())]
     }
 }

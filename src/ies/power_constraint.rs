@@ -36,7 +36,6 @@ impl InformationElement for PowerConstraint {
         vec![Field::new(
             "Local Power Constraint",
             format!("{} dB", self.power_constraint_db()),
-            None,
         )]
     }
 }

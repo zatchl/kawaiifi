@@ -36,7 +36,6 @@ impl InformationElement for IbssParameterSet {
         vec![Field::new(
             "ATIM Window",
             format!("{} TU", self.atim_window_tu()),
-            None,
         )]
     }
 }

@@ -34,6 +34,6 @@ impl InformationElement for Ssid {
     }
 
     fn information_fields(&self) -> Vec<Field> {
-        vec![Field::new("SSID", self.as_str().unwrap_or_default(), None)]
+        vec![Field::new("SSID", self.as_str().unwrap_or_default())]
     }
 }

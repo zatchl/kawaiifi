@@ -93,26 +93,23 @@ impl InformationElement for TransmitPowerEnvelope {
 
     fn information_fields(&self) -> Vec<Field> {
         let mut information_fields = vec![
-            Field::new(
+            Field::with_subfields(
                 "Transmit Power Information",
                 format!("{:#04x}", self.bits.as_raw_slice()[0]),
-                Some(vec![
+                vec![
                     Field::new(
                         "Local Maximum Transmit Power Count",
                         self.local_maximum_transmit_power_count(),
-                        None,
                     ),
                     Field::new(
                         "Local Maximum Transmit Power Unit Interpretation",
                         self.local_maximum_transmit_power_unit_interpretation(),
-                        None,
                     ),
-                ]),
+                ],
             ),
             Field::new(
                 "Local Maximum Transmit Power For 20 MHz",
                 format!("{} dBm", self.local_maximum_transmit_power_twenty_mhz_dbm()),
-                None,
             ),
         ];
 
@@ -120,7 +117,6 @@ impl InformationElement for TransmitPowerEnvelope {
             information_fields.push(Field::new(
                 "Local Maximum Transmit Power For 40 MHz",
                 format!("{} dBm", max_tx_forty_mhz),
-                None,
             ))
         }
 
@@ -128,7 +124,6 @@ impl InformationElement for TransmitPowerEnvelope {
             information_fields.push(Field::new(
                 "Local Maximum Transmit Power For 80 MHz",
                 format!("{} dBm", max_tx_eighty_mhz),
-                None,
             ))
         }
 
@@ -136,7 +131,6 @@ impl InformationElement for TransmitPowerEnvelope {
             information_fields.push(Field::new(
                 "Local Maximum Transmit Power For 160/80+80 MHz",
                 format!("{} dBm", max_tx_one_sixty_mhz),
-                None,
             ))
         }
 

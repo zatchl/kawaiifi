@@ -173,7 +173,6 @@ impl InformationElement for SupportedRates {
                         "Supported Rate"
                     },
                     format!("{:.1} Mbps", rate.value()),
-                    None,
                 )
             })
             .collect()

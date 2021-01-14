@@ -153,57 +153,47 @@ impl InformationElement for MeshConfiguration {
             Field::new(
                 "Active Path Selection Protocol",
                 format!("{:?}", self.active_path_selection_protocol()),
-                None,
             ),
             Field::new(
                 "Active Path Selection Metric",
                 format!("{:?}", self.active_path_selection_metric()),
-                None,
             ),
             Field::new(
                 "Congestion Control Mode",
                 format!("{:?}", self.congestion_control_mode()),
-                None,
             ),
             Field::new(
                 "Synchronization Method",
                 format!("{:?}", self.synchronization_method()),
-                None,
             ),
             Field::new(
                 "Authentication Protocol",
                 format!("{:?}", self.authentication_protocol()),
-                None,
             ),
-            Field::new(
+            Field::with_subfields(
                 "Mesh Formation Info",
                 format!("{:#04x}", self.bits.as_raw_slice()[5]),
-                Some(vec![
-                    Field::new(
-                        "Connected to Mesh Gate",
-                        self.connected_to_mesh_gate(),
-                        None,
-                    ),
-                    Field::new("Number of Peerings", self.number_of_peerings(), None),
-                    Field::new("Connected to AS", self.connected_to_as(), None),
-                ]),
+                vec![
+                    Field::new("Connected to Mesh Gate", self.connected_to_mesh_gate()),
+                    Field::new("Number of Peerings", self.number_of_peerings()),
+                    Field::new("Connected to AS", self.connected_to_as()),
+                ],
             ),
-            Field::new(
+            Field::with_subfields(
                 "Mesh Capability",
                 format!("{:#04x}", self.bits.as_raw_slice()[6]),
-                Some(vec![
+                vec![
                     Field::new(
                         "Accepting Additional Mesh Peerings",
                         self.accepting_additional_mesh_peerings(),
-                        None,
                     ),
-                    Field::new("MCCA Supported", self.mcca_supported(), None),
-                    Field::new("MCCA Enabled", self.mcca_enabled(), None),
-                    Field::new("Forwarding", self.forwarding(), None),
-                    Field::new("MBCA Enabled", self.mbca_enabled(), None),
-                    Field::new("TBTT Adjusting", self.tbtt_adjusting(), None),
-                    Field::new("Mesh Power Save Level", self.mesh_power_save_level(), None),
-                ]),
+                    Field::new("MCCA Supported", self.mcca_supported()),
+                    Field::new("MCCA Enabled", self.mcca_enabled()),
+                    Field::new("Forwarding", self.forwarding()),
+                    Field::new("MBCA Enabled", self.mbca_enabled()),
+                    Field::new("TBTT Adjusting", self.tbtt_adjusting()),
+                    Field::new("Mesh Power Save Level", self.mesh_power_save_level()),
+                ],
             ),
         ]
     }

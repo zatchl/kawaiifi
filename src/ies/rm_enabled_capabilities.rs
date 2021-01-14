@@ -164,144 +164,113 @@ impl InformationElement for RmEnabledCapabilities {
             Field::new(
                 "Link Measurement Capability",
                 self.link_measurement_capability(),
-                None,
             ),
             Field::new(
                 "Neighbor Report Capability",
                 self.neighbor_report_capability(),
-                None,
             ),
             Field::new(
                 "Parallel Measurements Capability",
                 self.parallel_measurements_capability(),
-                None,
             ),
             Field::new(
                 "Repeated Measurements Capability",
                 self.repeated_measurements_capability(),
-                None,
             ),
             Field::new(
                 "Beacon Passive Measurement Capability",
                 self.beacon_passive_measurement_capability(),
-                None,
             ),
             Field::new(
                 "Beacon Active Measurement Capability",
                 self.beacon_active_measurement_capability(),
-                None,
             ),
             Field::new(
                 "Beacon Table Measurement Capability",
                 self.beacon_table_measurement_capability(),
-                None,
             ),
             Field::new(
                 "Beacon Measurement Reporting Conditions Capability",
                 self.beacon_measurement_reporting_conditions_capability(),
-                None,
             ),
             Field::new(
                 "Frame Measurement Capability",
                 self.frame_measurement_capability(),
-                None,
             ),
             Field::new(
                 "Channel Load Measurement Capability",
                 self.channel_load_measurement_capability(),
-                None,
             ),
             Field::new(
                 "Noise Histogram Measurement Capability",
                 self.noise_histogram_measurement_capability(),
-                None,
             ),
             Field::new(
                 "Statistics Measurement Capability",
                 self.statistics_measurement_capability(),
-                None,
             ),
             Field::new(
                 "LCI Measurement Capability",
                 self.lci_measurement_capability(),
-                None,
             ),
-            Field::new(
-                "LCI Azimuth Capability",
-                self.lci_azimuth_capability(),
-                None,
-            ),
+            Field::new("LCI Azimuth Capability", self.lci_azimuth_capability()),
             Field::new(
                 "Transmit Stream/Category Measurement Capability",
                 self.transmit_stream_category_measurement_capability(),
-                None,
             ),
             Field::new(
                 "Triggered Transmit Stream/Category Measurement Capability",
                 self.triggered_transmit_stream_category_measurement_capability(),
-                None,
             ),
             Field::new(
                 "AP Channel Report Capability",
                 self.ap_channel_report_capability(),
-                None,
             ),
-            Field::new("RM MIB Capability", self.rm_mib_capability(), None),
+            Field::new("RM MIB Capability", self.rm_mib_capability()),
             Field::new(
                 "Operating Channel Max Measurement Duration",
                 self.operating_channel_max_measurement_duration(),
-                None,
             ),
             Field::new(
                 "Nonoperating Channel Max Measurement Duration",
                 self.nonoperating_channel_max_measurement_duration(),
-                None,
             ),
             Field::new(
                 "Measurement Pilot Capability",
                 self.measurement_pilot_capability(),
-                None,
             ),
             Field::new(
                 "Measurement Pilot Transmission Information Capability",
                 self.measurement_pilot_transmission_information_capability(),
-                None,
             ),
             Field::new(
                 "Neighbor Report TSF Offset Capability",
                 self.neighbor_report_tsf_offset_capability(),
-                None,
             ),
             Field::new(
                 "RCPI Measurement Capability",
                 self.rcpi_measurement_capability(),
-                None,
             ),
             Field::new(
                 "RSNI Measurement Capability",
                 self.rsni_measurement_capability(),
-                None,
             ),
             Field::new(
                 "BSS Average Access Delay Capability",
                 self.bss_average_access_delay_capability(),
-                None,
             ),
             Field::new(
                 "BSS Available Admission Capacity Capability",
                 self.bss_available_admission_capacity_capacity(),
-                None,
             ),
-            Field::new("Antenna Capability", self.antenna_capability(), None),
+            Field::new("Antenna Capability", self.antenna_capability()),
             Field::new(
                 "FTM Range Report Capability",
                 self.ftm_range_report_capability(),
-                None,
             ),
             Field::new(
                 "Civic Location Measurement Capability",
                 self.civic_location_measurement_capability(),
-                None,
             ),
         ]
     }

@@ -62,12 +62,10 @@ impl InformationElement for OverlappingBssScanParams {
             Field::new(
                 "OBSS Scan Passive Dwell",
                 format!("{} TU", self.obss_scan_passive_dwell_tu()),
-                None,
             ),
             Field::new(
                 "OBSS Scan Active Dwell",
                 format!("{} TU", self.obss_scan_active_dwell_tu()),
-                None,
             ),
             Field::new(
                 "BSS Channel Width Trigger Scan Interval",
@@ -75,27 +73,22 @@ impl InformationElement for OverlappingBssScanParams {
                     "{} seconds",
                     self.bss_channel_width_trigger_scan_interval_secs()
                 ),
-                None,
             ),
             Field::new(
                 "OBSS Scan Passive Total Per Channel",
                 format!("{} TU", self.obss_scan_passive_total_per_channel_tu()),
-                None,
             ),
             Field::new(
                 "OBSS Scan Active Total Per Channel",
                 format!("{} TU", self.obss_scan_active_total_per_channel_tu()),
-                None,
             ),
             Field::new(
                 "BSS Width Channel Transition Delay Factor",
                 self.bss_width_channel_transition_delay_factor().to_string(),
-                None,
             ),
             Field::new(
                 "OBSS Scan Activity Threshold",
                 self.obss_scan_activity_threshold().to_string(),
-                None,
             ),
         ]
     }

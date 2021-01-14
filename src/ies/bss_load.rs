@@ -53,11 +53,10 @@ impl InformationElement for BssLoad {
 
     fn information_fields(&self) -> Vec<Field> {
         vec![
-            Field::new("Station Count", self.station_count(), None),
+            Field::new("Station Count", self.station_count()),
             Field::new(
                 "Channel Utilization",
                 format!("{}%", self.channel_utilization()),
-                None,
             ),
             Field::new(
                 "Available Admission Capacity",
@@ -65,7 +64,6 @@ impl InformationElement for BssLoad {
                     "{} μs/s",
                     u32::from(self.available_admission_capacity()) * 32
                 ),
-                None,
             ),
         ]
     }
