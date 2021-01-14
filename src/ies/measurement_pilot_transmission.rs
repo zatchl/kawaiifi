@@ -76,28 +76,24 @@ impl InformationElement for MeasurementPilotTransmission {
     }
 
     fn information_fields(&self) -> Vec<Field> {
-        let mut fields = vec![Field {
-            title: "Measurement Pilot Interval".to_string(),
-            value: format!("{} TU", self.measurement_pilot_interval_tu()),
-            subfields: None,
-        }];
+        let mut fields = vec![Field::new(
+            "Measurement Pilot Interval",
+            format!("{} TU", self.measurement_pilot_interval_tu()),
+            None,
+        )];
 
         let subelements = self.subelements();
         if !subelements.is_empty() {
-            fields.push(Field {
-                title: "Subelements".to_string(),
-                value: format!("{:?}", &self.bytes[1..]),
-                subfields: Some(
+            fields.push(Field::new(
+                "Subelements",
+                format!("{:?}", &self.bytes[1..]),
+                Some(
                     subelements
                         .iter()
-                        .map(|se| Field {
-                            title: format!("ID {}", se.0),
-                            value: format!("{:?}", se.2),
-                            subfields: None,
-                        })
+                        .map(|se| Field::new(format!("ID {}", se.0), format!("{:?}", se.2), None))
                         .collect(),
                 ),
-            })
+            ));
         }
 
         fields

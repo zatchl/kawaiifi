@@ -150,93 +150,61 @@ impl InformationElement for MeshConfiguration {
 
     fn information_fields(&self) -> Vec<Field> {
         vec![
-            Field {
-                title: "Active Path Selection Protocol".to_string(),
-                value: format!("{:?}", self.active_path_selection_protocol()),
-                subfields: None,
-            },
-            Field {
-                title: "Active Path Selection Metric".to_string(),
-                value: format!("{:?}", self.active_path_selection_metric()),
-                subfields: None,
-            },
-            Field {
-                title: "Congestion Control Mode".to_string(),
-                value: format!("{:?}", self.congestion_control_mode()),
-                subfields: None,
-            },
-            Field {
-                title: "Synchronization Method".to_string(),
-                value: format!("{:?}", self.synchronization_method()),
-                subfields: None,
-            },
-            Field {
-                title: "Authentication Protocol".to_string(),
-                value: format!("{:?}", self.authentication_protocol()),
-                subfields: None,
-            },
-            Field {
-                title: "Mesh Formation Info".to_string(),
-                value: format!("{:#04x}", self.bits.as_raw_slice()[5]),
-                subfields: Some(vec![
-                    Field {
-                        title: "Connected to Mesh Gate".to_string(),
-                        value: self.connected_to_mesh_gate().to_string(),
-                        subfields: None,
-                    },
-                    Field {
-                        title: "Number of Peerings".to_string(),
-                        value: self.number_of_peerings().to_string(),
-                        subfields: None,
-                    },
-                    Field {
-                        title: "Connected to AS".to_string(),
-                        value: self.connected_to_as().to_string(),
-                        subfields: None,
-                    },
+            Field::new(
+                "Active Path Selection Protocol",
+                format!("{:?}", self.active_path_selection_protocol()),
+                None,
+            ),
+            Field::new(
+                "Active Path Selection Metric",
+                format!("{:?}", self.active_path_selection_metric()),
+                None,
+            ),
+            Field::new(
+                "Congestion Control Mode",
+                format!("{:?}", self.congestion_control_mode()),
+                None,
+            ),
+            Field::new(
+                "Synchronization Method",
+                format!("{:?}", self.synchronization_method()),
+                None,
+            ),
+            Field::new(
+                "Authentication Protocol",
+                format!("{:?}", self.authentication_protocol()),
+                None,
+            ),
+            Field::new(
+                "Mesh Formation Info",
+                format!("{:#04x}", self.bits.as_raw_slice()[5]),
+                Some(vec![
+                    Field::new(
+                        "Connected to Mesh Gate",
+                        self.connected_to_mesh_gate(),
+                        None,
+                    ),
+                    Field::new("Number of Peerings", self.number_of_peerings(), None),
+                    Field::new("Connected to AS", self.connected_to_as(), None),
                 ]),
-            },
-            Field {
-                title: "Mesh Capability".to_string(),
-                value: format!("{:#04x}", self.bits.as_raw_slice()[6]),
-                subfields: Some(vec![
-                    Field {
-                        title: "Accepting Additional Mesh Peerings".to_string(),
-                        value: self.accepting_additional_mesh_peerings().to_string(),
-                        subfields: None,
-                    },
-                    Field {
-                        title: "MCCA Supported".to_string(),
-                        value: self.mcca_supported().to_string(),
-                        subfields: None,
-                    },
-                    Field {
-                        title: "MCCA Enabled".to_string(),
-                        value: self.mcca_enabled().to_string(),
-                        subfields: None,
-                    },
-                    Field {
-                        title: "Forwarding".to_string(),
-                        value: self.forwarding().to_string(),
-                        subfields: None,
-                    },
-                    Field {
-                        title: "MBCA Enabled".to_string(),
-                        value: self.mbca_enabled().to_string(),
-                        subfields: None,
-                    },
-                    Field {
-                        title: "TBTT Adjusting".to_string(),
-                        value: self.tbtt_adjusting().to_string(),
-                        subfields: None,
-                    },
-                    Field {
-                        title: "Mesh Power Save Level".to_string(),
-                        value: self.mesh_power_save_level().to_string(),
-                        subfields: None,
-                    },
+            ),
+            Field::new(
+                "Mesh Capability",
+                format!("{:#04x}", self.bits.as_raw_slice()[6]),
+                Some(vec![
+                    Field::new(
+                        "Accepting Additional Mesh Peerings",
+                        self.accepting_additional_mesh_peerings(),
+                        None,
+                    ),
+                    Field::new("MCCA Supported", self.mcca_supported(), None),
+                    Field::new("MCCA Enabled", self.mcca_enabled(), None),
+                    Field::new("Forwarding", self.forwarding(), None),
+                    Field::new("MBCA Enabled", self.mbca_enabled(), None),
+                    Field::new("TBTT Adjusting", self.tbtt_adjusting(), None),
+                    Field::new("Mesh Power Save Level", self.mesh_power_save_level(), None),
                 ]),
-            },
+            ),
         ]
     }
 }

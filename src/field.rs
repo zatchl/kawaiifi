@@ -2,12 +2,20 @@ use std::fmt::Display;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Field {
-    pub(crate) title: String,
-    pub(crate) value: String,
-    pub(crate) subfields: Option<Vec<Field>>,
+    title: String,
+    value: String,
+    subfields: Option<Vec<Field>>,
 }
 
 impl Field {
+    pub fn new(title: impl Display, value: impl Display, subfields: Option<Vec<Field>>) -> Field {
+        Field {
+            title: title.to_string(),
+            value: value.to_string(),
+            subfields,
+        }
+    }
+
     pub fn title(&self) -> &str {
         &self.title
     }
@@ -23,6 +31,14 @@ impl Field {
 
 impl Display for Field {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}: {}", self.title, self.value)
+        if let Some(subfields) = &self.subfields {
+            let mut res = write!(f, "{}: {}", self.title, self.value);
+            for field in subfields {
+                res = write!(f, "\r\n- {}: {}", field.title, field.value);
+            }
+            res
+        } else {
+            write!(f, "{}: {}", self.title, self.value)
+        }
     }
 }

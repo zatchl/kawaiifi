@@ -71,71 +71,19 @@ impl CapabilityInfo {
 
     pub fn fields(&self) -> Vec<Field> {
         vec![
-            Field {
-                title: "ESS".to_string(),
-                value: self.ess().to_string(),
-                subfields: None,
-            },
-            Field {
-                title: "IBSS".to_string(),
-                value: self.ibss().to_string(),
-                subfields: None,
-            },
-            Field {
-                title: "CF Pollable".to_string(),
-                value: self.cf_pollable().to_string(),
-                subfields: None,
-            },
-            Field {
-                title: "CF-Poll Request".to_string(),
-                value: self.cf_poll_request().to_string(),
-                subfields: None,
-            },
-            Field {
-                title: "Privacy".to_string(),
-                value: self.privacy().to_string(),
-                subfields: None,
-            },
-            Field {
-                title: "Short Preamble".to_string(),
-                value: self.short_preamble().to_string(),
-                subfields: None,
-            },
-            Field {
-                title: "Spectrum Management".to_string(),
-                value: self.spectrum_management().to_string(),
-                subfields: None,
-            },
-            Field {
-                title: "QoS".to_string(),
-                value: self.qos().to_string(),
-                subfields: None,
-            },
-            Field {
-                title: "Short Slot Time".to_string(),
-                value: self.short_slot_time().to_string(),
-                subfields: None,
-            },
-            Field {
-                title: "APSD".to_string(),
-                value: self.apsd().to_string(),
-                subfields: None,
-            },
-            Field {
-                title: "Radio Measurement".to_string(),
-                value: self.radio_measurement().to_string(),
-                subfields: None,
-            },
-            Field {
-                title: "Delayed Block Ack".to_string(),
-                value: self.delayed_block_ack().to_string(),
-                subfields: None,
-            },
-            Field {
-                title: "Immediate Block Ack".to_string(),
-                value: self.immediate_block_ack().to_string(),
-                subfields: None,
-            },
+            Field::new("ESS", self.ess(), None),
+            Field::new("IBSS", self.ibss(), None),
+            Field::new("CF Pollable", self.cf_pollable(), None),
+            Field::new("CF-Poll Request", self.cf_poll_request(), None),
+            Field::new("Privacy", self.privacy(), None),
+            Field::new("Short Preamble", self.short_preamble(), None),
+            Field::new("Spectrum Management", self.spectrum_management(), None),
+            Field::new("QoS", self.qos(), None),
+            Field::new("Short Slot Time", self.short_slot_time(), None),
+            Field::new("APSD", self.apsd(), None),
+            Field::new("Radio Measurement", self.radio_measurement(), None),
+            Field::new("Delayed Block Ack", self.delayed_block_ack(), None),
+            Field::new("Immediate Block Ack", self.immediate_block_ack(), None),
         ]
     }
 }

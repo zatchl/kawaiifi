@@ -93,53 +93,51 @@ impl InformationElement for TransmitPowerEnvelope {
 
     fn information_fields(&self) -> Vec<Field> {
         let mut information_fields = vec![
-            Field {
-                title: "Transmit Power Information".to_string(),
-                value: format!("{:#04x}", self.bits.as_raw_slice()[0]),
-                subfields: Some(vec![
-                    Field {
-                        title: "Local Maximum Transmit Power Count".to_string(),
-                        value: self.local_maximum_transmit_power_count().to_string(),
-                        subfields: None,
-                    },
-                    Field {
-                        title: "Local Maximum Transmit Power Unit Interpretation".to_string(),
-                        value: self
-                            .local_maximum_transmit_power_unit_interpretation()
-                            .to_string(),
-                        subfields: None,
-                    },
+            Field::new(
+                "Transmit Power Information",
+                format!("{:#04x}", self.bits.as_raw_slice()[0]),
+                Some(vec![
+                    Field::new(
+                        "Local Maximum Transmit Power Count",
+                        self.local_maximum_transmit_power_count(),
+                        None,
+                    ),
+                    Field::new(
+                        "Local Maximum Transmit Power Unit Interpretation",
+                        self.local_maximum_transmit_power_unit_interpretation(),
+                        None,
+                    ),
                 ]),
-            },
-            Field {
-                title: "Local Maximum Transmit Power For 20 MHz".to_string(),
-                value: format!("{} dBm", self.local_maximum_transmit_power_twenty_mhz_dbm()),
-                subfields: None,
-            },
+            ),
+            Field::new(
+                "Local Maximum Transmit Power For 20 MHz",
+                format!("{} dBm", self.local_maximum_transmit_power_twenty_mhz_dbm()),
+                None,
+            ),
         ];
 
         if let Some(max_tx_forty_mhz) = self.local_maximum_transmit_power_forty_mhz_dbm() {
-            information_fields.push(Field {
-                title: "Local Maximum Transmit Power For 40 MHz".to_string(),
-                value: format!("{} dBm", max_tx_forty_mhz),
-                subfields: None,
-            })
+            information_fields.push(Field::new(
+                "Local Maximum Transmit Power For 40 MHz",
+                format!("{} dBm", max_tx_forty_mhz),
+                None,
+            ))
         }
 
         if let Some(max_tx_eighty_mhz) = self.local_maximum_transmit_power_eighty_mhz_dbm() {
-            information_fields.push(Field {
-                title: "Local Maximum Transmit Power For 80 MHz".to_string(),
-                value: format!("{} dBm", max_tx_eighty_mhz),
-                subfields: None,
-            })
+            information_fields.push(Field::new(
+                "Local Maximum Transmit Power For 80 MHz",
+                format!("{} dBm", max_tx_eighty_mhz),
+                None,
+            ))
         }
 
         if let Some(max_tx_one_sixty_mhz) = self.local_maximum_transmit_power_one_sixty_mhz_dbm() {
-            information_fields.push(Field {
-                title: "Local Maximum Transmit Power For 160/80+80 MHz".to_string(),
-                value: format!("{} dBm", max_tx_one_sixty_mhz),
-                subfields: None,
-            })
+            information_fields.push(Field::new(
+                "Local Maximum Transmit Power For 160/80+80 MHz",
+                format!("{} dBm", max_tx_one_sixty_mhz),
+                None,
+            ))
         }
 
         information_fields

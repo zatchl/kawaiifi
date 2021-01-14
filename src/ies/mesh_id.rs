@@ -32,10 +32,10 @@ impl InformationElement for MeshId {
     }
 
     fn information_fields(&self) -> Vec<Field> {
-        vec![Field {
-            title: "Mesh ID".to_string(),
-            value: format!("{:X?}", self.mesh_id()),
-            subfields: None,
-        }]
+        vec![Field::new(
+            "Mesh ID",
+            format!("{:X?}", self.mesh_id()),
+            None,
+        )]
     }
 }

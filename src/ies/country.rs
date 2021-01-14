@@ -167,33 +167,12 @@ impl InformationElement for Country {
 
     fn information_fields(&self) -> Vec<Field> {
         vec![
-            Field {
-                title: "Country Code".to_string(),
-                value: self.country_code().to_string(),
-                subfields: None,
-            },
-            Field {
-                title: "Environment".to_string(),
-                value: self.environment().unwrap_or(Environment::Any).to_string(),
-                subfields: None,
-            },
+            Field::new("Country Code", self.country_code(), None),
+            Field::new(
+                "Environment",
+                self.environment().unwrap_or(Environment::Any),
+                None,
+            ),
         ]
     }
 }
-
-// impl Display for Country {
-// fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-// write!(
-// f,
-// "{}: {} {}\r\n{}",
-// Self::NAME,
-// self.country_code(),
-// self.environment().unwrap_or(Environment::Any),
-// self.subband_info()
-// .iter()
-// .map(|subband_info| subband_info.to_string())
-// .collect::<Vec<String>>()
-// .join("\r\n")
-// )
-// }
-// }

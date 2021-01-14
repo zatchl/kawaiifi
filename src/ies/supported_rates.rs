@@ -1,5 +1,5 @@
 use super::{Display, Field, InformationElement};
-use std::{collections::HashSet, convert::TryFrom, ops::Deref};
+use std::{collections::HashSet, convert::TryFrom};
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum DataRate {
@@ -165,14 +165,16 @@ impl InformationElement for SupportedRates {
 
         sorted_rates
             .iter()
-            .map(|rate| Field {
-                title: if rate.is_basic() {
-                    "Basic Rate".to_string()
-                } else {
-                    "Supported Rate".to_string()
-                },
-                value: format!("{:.1} Mbps", rate.value()),
-                subfields: None,
+            .map(|rate| {
+                Field::new(
+                    if rate.is_basic() {
+                        "Basic Rate"
+                    } else {
+                        "Supported Rate"
+                    },
+                    format!("{:.1} Mbps", rate.value()),
+                    None,
+                )
             })
             .collect()
     }

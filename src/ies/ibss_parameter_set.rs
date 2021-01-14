@@ -33,10 +33,10 @@ impl InformationElement for IbssParameterSet {
     }
 
     fn information_fields(&self) -> Vec<Field> {
-        vec![Field {
-            title: "ATIM Window".to_string(),
-            value: format!("{} TU", self.atim_window_tu()),
-            subfields: None,
-        }]
+        vec![Field::new(
+            "ATIM Window",
+            format!("{} TU", self.atim_window_tu()),
+            None,
+        )]
     }
 }

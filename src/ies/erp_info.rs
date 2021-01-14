@@ -45,21 +45,9 @@ impl InformationElement for ErpInfo {
 
     fn information_fields(&self) -> Vec<Field> {
         vec![
-            Field {
-                title: "Non-ERP Present".to_string(),
-                value: self.non_erp_present().to_string(),
-                subfields: None,
-            },
-            Field {
-                title: "Use Protection".to_string(),
-                value: self.use_protection().to_string(),
-                subfields: None,
-            },
-            Field {
-                title: "Barker Preamble Mode".to_string(),
-                value: self.barker_preamble_mode().to_string(),
-                subfields: None,
-            },
+            Field::new("Non-ERP Present", self.non_erp_present(), None),
+            Field::new("Use Protection", self.use_protection(), None),
+            Field::new("Barker Preamble Mode", self.barker_preamble_mode(), None),
         ]
     }
 }

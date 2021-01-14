@@ -59,44 +59,44 @@ impl InformationElement for OverlappingBssScanParams {
 
     fn information_fields(&self) -> Vec<Field> {
         vec![
-            Field {
-                title: "OBSS Scan Passive Dwell".to_string(),
-                value: format!("{} TU", self.obss_scan_passive_dwell_tu()),
-                subfields: None,
-            },
-            Field {
-                title: "OBSS Scan Active Dwell".to_string(),
-                value: format!("{} TU", self.obss_scan_active_dwell_tu()),
-                subfields: None,
-            },
-            Field {
-                title: "BSS Channel Width Trigger Scan Interval".to_string(),
-                value: format!(
+            Field::new(
+                "OBSS Scan Passive Dwell",
+                format!("{} TU", self.obss_scan_passive_dwell_tu()),
+                None,
+            ),
+            Field::new(
+                "OBSS Scan Active Dwell",
+                format!("{} TU", self.obss_scan_active_dwell_tu()),
+                None,
+            ),
+            Field::new(
+                "BSS Channel Width Trigger Scan Interval",
+                format!(
                     "{} seconds",
                     self.bss_channel_width_trigger_scan_interval_secs()
                 ),
-                subfields: None,
-            },
-            Field {
-                title: "OBSS Scan Passive Total Per Channel".to_string(),
-                value: format!("{} TU", self.obss_scan_passive_total_per_channel_tu()),
-                subfields: None,
-            },
-            Field {
-                title: "OBSS Scan Active Total Per Channel".to_string(),
-                value: format!("{} TU", self.obss_scan_active_total_per_channel_tu()),
-                subfields: None,
-            },
-            Field {
-                title: "BSS Width Channel Transition Delay Factor".to_string(),
-                value: self.bss_width_channel_transition_delay_factor().to_string(),
-                subfields: None,
-            },
-            Field {
-                title: "OBSS Scan Activity Threshold".to_string(),
-                value: self.obss_scan_activity_threshold().to_string(),
-                subfields: None,
-            },
+                None,
+            ),
+            Field::new(
+                "OBSS Scan Passive Total Per Channel",
+                format!("{} TU", self.obss_scan_passive_total_per_channel_tu()),
+                None,
+            ),
+            Field::new(
+                "OBSS Scan Active Total Per Channel",
+                format!("{} TU", self.obss_scan_active_total_per_channel_tu()),
+                None,
+            ),
+            Field::new(
+                "BSS Width Channel Transition Delay Factor",
+                self.bss_width_channel_transition_delay_factor().to_string(),
+                None,
+            ),
+            Field::new(
+                "OBSS Scan Activity Threshold",
+                self.obss_scan_activity_threshold().to_string(),
+                None,
+            ),
         ]
     }
 }

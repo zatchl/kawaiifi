@@ -33,10 +33,10 @@ impl InformationElement for PowerConstraint {
     }
 
     fn information_fields(&self) -> Vec<Field> {
-        vec![Field {
-            title: "Local Power Constraint".to_string(),
-            value: format!("{} dB", self.power_constraint_db()),
-            subfields: None,
-        }]
+        vec![Field::new(
+            "Local Power Constraint",
+            format!("{} dB", self.power_constraint_db()),
+            None,
+        )]
     }
 }
