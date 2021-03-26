@@ -162,14 +162,12 @@ impl Display for MinimalGrouping {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HtCapabilities {
     bits: BitVec<LocalBits, u8>,
 }
 
 impl HtCapabilities {
-    pub const NAME: &'static str = "HT Capabilities";
-    pub const ID: u8 = 45;
     pub const MIN_LENGTH: usize = 26;
 
     pub fn new(bytes: Vec<u8>) -> Result<HtCapabilities, IeError> {
@@ -417,13 +415,8 @@ impl HtCapabilities {
 }
 
 impl InformationElement for HtCapabilities {
-    fn name(&self) -> &'static str {
-        HtCapabilities::NAME
-    }
-
-    fn id(&self) -> u8 {
-        HtCapabilities::ID
-    }
+    const NAME: &'static str = "HT Capabilities";
+    const ID: u8 = 45;
 
     fn bytes(&self) -> &[u8] {
         self.bits.as_raw_slice()
@@ -604,3 +597,5 @@ impl InformationElement for HtCapabilities {
         ]
     }
 }
+
+impl_display_for_ie!(HtCapabilities);

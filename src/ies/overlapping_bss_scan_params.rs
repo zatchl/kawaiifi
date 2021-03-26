@@ -1,14 +1,12 @@
 use super::{Field, InformationElement};
 use std::convert::TryInto;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct OverlappingBssScanParams {
     bytes: [u8; Self::LENGTH],
 }
 
 impl OverlappingBssScanParams {
-    pub const NAME: &'static str = "Overlapping BSS Scan Parameters";
-    pub const ID: u8 = 74;
     pub const LENGTH: usize = 14;
 
     pub fn new(bytes: [u8; Self::LENGTH]) -> OverlappingBssScanParams {
@@ -45,13 +43,8 @@ impl OverlappingBssScanParams {
 }
 
 impl InformationElement for OverlappingBssScanParams {
-    fn name(&self) -> &'static str {
-        Self::NAME
-    }
-
-    fn id(&self) -> u8 {
-        Self::ID
-    }
+    const NAME: &'static str = "Overlapping BSS Scan Parameters";
+    const ID: u8 = 74;
 
     fn bytes(&self) -> &[u8] {
         &self.bytes
@@ -93,3 +86,5 @@ impl InformationElement for OverlappingBssScanParams {
         ]
     }
 }
+
+impl_display_for_ie!(OverlappingBssScanParams);

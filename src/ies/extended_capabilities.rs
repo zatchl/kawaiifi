@@ -20,15 +20,12 @@ impl Display for MaxMsdus {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ExtendedCapabilities {
     bits: BitVec<LocalBits, u8>,
 }
 
 impl ExtendedCapabilities {
-    pub const NAME: &'static str = "Extended Capabilities";
-    pub const ID: u8 = 127;
-
     pub fn new(bytes: Vec<u8>) -> ExtendedCapabilities {
         ExtendedCapabilities {
             bits: BitVec::from_vec(bytes),
@@ -325,13 +322,8 @@ impl ExtendedCapabilities {
 }
 
 impl InformationElement for ExtendedCapabilities {
-    fn name(&self) -> &'static str {
-        ExtendedCapabilities::NAME
-    }
-
-    fn id(&self) -> u8 {
-        ExtendedCapabilities::ID
-    }
+    const NAME: &'static str = "Extended Capabilities";
+    const ID: u8 = 127;
 
     fn bytes(&self) -> &[u8] {
         self.bits.as_raw_slice()
@@ -669,3 +661,5 @@ impl InformationElement for ExtendedCapabilities {
         fields
     }
 }
+
+impl_display_for_ie!(ExtendedCapabilities);

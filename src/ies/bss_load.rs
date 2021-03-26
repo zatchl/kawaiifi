@@ -1,14 +1,12 @@
 use super::{Field, IeError, InformationElement};
 use bitvec::prelude::*;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BssLoad {
     bits: BitVec<LocalBits, u8>,
 }
 
 impl BssLoad {
-    pub const NAME: &'static str = "Bss Load";
-    pub const ID: u8 = 11;
     pub const LENGTH: usize = 5;
 
     pub fn new(bytes: Vec<u8>) -> Result<BssLoad, IeError> {
@@ -39,13 +37,8 @@ impl BssLoad {
 }
 
 impl InformationElement for BssLoad {
-    fn name(&self) -> &'static str {
-        BssLoad::NAME
-    }
-
-    fn id(&self) -> u8 {
-        BssLoad::ID
-    }
+    const NAME: &'static str = "Bss Load";
+    const ID: u8 = 11;
 
     fn bytes(&self) -> &[u8] {
         self.bits.as_raw_slice()
@@ -68,3 +61,5 @@ impl InformationElement for BssLoad {
         ]
     }
 }
+
+impl_display_for_ie!(BssLoad);

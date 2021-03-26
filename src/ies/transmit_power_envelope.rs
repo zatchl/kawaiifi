@@ -26,14 +26,12 @@ impl Display for UnitInterpretation {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TransmitPowerEnvelope {
     bits: BitVec<LocalBits, u8>,
 }
 
 impl TransmitPowerEnvelope {
-    pub const NAME: &'static str = "Transmit Power Envelope";
-    pub const ID: u8 = 195;
     pub const MIN_LENGTH: usize = 2;
 
     pub fn new(bytes: Vec<u8>) -> Result<TransmitPowerEnvelope, IeError> {
@@ -79,13 +77,8 @@ impl TransmitPowerEnvelope {
 }
 
 impl InformationElement for TransmitPowerEnvelope {
-    fn name(&self) -> &'static str {
-        Self::NAME
-    }
-
-    fn id(&self) -> u8 {
-        Self::ID
-    }
+    const NAME: &'static str = "Transmit Power Envelope";
+    const ID: u8 = 195;
 
     fn bytes(&self) -> &[u8] {
         self.bits.as_raw_slice()
@@ -137,3 +130,5 @@ impl InformationElement for TransmitPowerEnvelope {
         information_fields
     }
 }
+
+impl_display_for_ie!(TransmitPowerEnvelope);

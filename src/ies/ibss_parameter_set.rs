@@ -1,13 +1,11 @@
 use super::{Field, InformationElement};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct IbssParameterSet {
     bytes: [u8; Self::LENGTH],
 }
 
 impl IbssParameterSet {
-    pub const NAME: &'static str = "IBSS Parameter Set";
-    pub const ID: u8 = 6;
     pub const LENGTH: usize = 2;
 
     pub fn new(bytes: [u8; Self::LENGTH]) -> IbssParameterSet {
@@ -20,13 +18,8 @@ impl IbssParameterSet {
 }
 
 impl InformationElement for IbssParameterSet {
-    fn name(&self) -> &'static str {
-        Self::NAME
-    }
-
-    fn id(&self) -> u8 {
-        Self::ID
-    }
+    const NAME: &'static str = "IBSS Parameter Set";
+    const ID: u8 = 6;
 
     fn bytes(&self) -> &[u8] {
         &self.bytes
@@ -39,3 +32,5 @@ impl InformationElement for IbssParameterSet {
         )]
     }
 }
+
+impl_display_for_ie!(IbssParameterSet);

@@ -84,14 +84,12 @@ impl Display for SubbandInfo {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Country {
     bytes: Vec<u8>,
 }
 
 impl Country {
-    pub const NAME: &'static str = "Country";
-    pub const ID: u8 = 7;
     pub const MIN_LENGTH: usize = 6;
 
     pub fn new(bytes: Vec<u8>) -> Result<Country, IeError> {
@@ -153,13 +151,8 @@ impl Country {
 }
 
 impl InformationElement for Country {
-    fn name(&self) -> &'static str {
-        Country::NAME
-    }
-
-    fn id(&self) -> u8 {
-        Country::ID
-    }
+    const NAME: &'static str = "Country";
+    const ID: u8 = 7;
 
     fn bytes(&self) -> &[u8] {
         &self.bytes
@@ -175,3 +168,5 @@ impl InformationElement for Country {
         ]
     }
 }
+
+impl_display_for_ie!(Country);

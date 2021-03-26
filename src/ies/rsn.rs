@@ -1,13 +1,11 @@
-use super::{Display, InformationElement};
+use super::{Field, InformationElement};
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Rsn {
     bytes: Vec<u8>,
 }
 
 impl Rsn {
-    pub const ID: u8 = 48;
-    pub const NAME: &'static str = "RSN";
 
     pub fn new(bytes: Vec<u8>) -> Rsn {
         Rsn { bytes }
@@ -22,14 +20,21 @@ impl InformationElement for Rsn {
     fn id(&self) -> u8 {
         Rsn::ID
     }
+}
+
+impl InformationElement for Rsn {
+    const NAME: &'static str = "RSN";
+    const ID: u8 = 48;
 
     fn bytes(&self) -> &[u8] {
         &self.bytes
     }
+
+    fn information_fields(&self) -> Vec<Field> {
+        Vec::new()
+    }
 }
 
-impl Display for Rsn {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "{}: {:?}", Self::NAME, self.bytes())
+impl_display_for_ie!(Rsn);
     }
 }

@@ -1,14 +1,11 @@
 use super::{Field, InformationElement};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MeshId {
     bytes: Vec<u8>,
 }
 
 impl MeshId {
-    pub const NAME: &'static str = "Mesh ID";
-    pub const ID: u8 = 114;
-
     pub fn new(bytes: Vec<u8>) -> MeshId {
         MeshId { bytes }
     }
@@ -19,13 +16,8 @@ impl MeshId {
 }
 
 impl InformationElement for MeshId {
-    fn name(&self) -> &'static str {
-        MeshId::NAME
-    }
-
-    fn id(&self) -> u8 {
-        MeshId::ID
-    }
+    const NAME: &'static str = "Mesh ID";
+    const ID: u8 = 114;
 
     fn bytes(&self) -> &[u8] {
         &self.bytes
@@ -35,3 +27,5 @@ impl InformationElement for MeshId {
         vec![Field::new("Mesh ID", format!("{:X?}", self.mesh_id()))]
     }
 }
+
+impl_display_for_ie!(MeshId);

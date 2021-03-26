@@ -1,14 +1,12 @@
 use super::{Field, IeError, InformationElement};
 use bitvec::prelude::*;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct VhtCapabilities {
     bits: BitVec<Lsb0, u8>,
 }
 
 impl VhtCapabilities {
-    pub const NAME: &'static str = "VHT Capabilities";
-    pub const ID: u8 = 191;
     pub const LENGTH: usize = 12;
 
     pub fn new(bytes: Vec<u8>) -> Result<VhtCapabilities, IeError> {
@@ -35,6 +33,10 @@ impl InformationElement for VhtCapabilities {
         VhtCapabilities::ID
     }
 
+impl InformationElement for VhtCapabilities {
+    const NAME: &'static str = "VHT Capabilities";
+    const ID: u8 = 191;
+
     fn bytes(&self) -> &[u8] {
         self.bits.as_raw_slice()
     }
@@ -44,5 +46,6 @@ impl InformationElement for VhtCapabilities {
     }
 }
 
+impl_display_for_ie!(VhtCapabilities);
     }
 }

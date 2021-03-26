@@ -2,15 +2,12 @@ use super::{Field, InformationElement};
 use std::str;
 use std::str::Utf8Error;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Ssid {
     bytes: Vec<u8>,
 }
 
 impl Ssid {
-    pub const NAME: &'static str = "SSID";
-    pub const ID: u8 = 0;
-
     pub fn new(bytes: Vec<u8>) -> Ssid {
         Ssid { bytes }
     }
@@ -21,13 +18,8 @@ impl Ssid {
 }
 
 impl InformationElement for Ssid {
-    fn name(&self) -> &'static str {
-        Ssid::NAME
-    }
-
-    fn id(&self) -> u8 {
-        Ssid::ID
-    }
+    const NAME: &'static str = "SSID";
+    const ID: u8 = 0;
 
     fn bytes(&self) -> &[u8] {
         &self.bytes
@@ -37,3 +29,5 @@ impl InformationElement for Ssid {
         vec![Field::new("SSID", self.as_str().unwrap_or_default())]
     }
 }
+
+impl_display_for_ie!(Ssid);

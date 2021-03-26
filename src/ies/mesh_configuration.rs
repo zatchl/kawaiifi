@@ -41,14 +41,12 @@ pub enum AuthenticationProtocol {
     VendorSpecific = 255,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MeshConfiguration {
     bits: BitVec<LocalBits, u8>,
 }
 
 impl MeshConfiguration {
-    pub const NAME: &'static str = "Mesh Configuration";
-    pub const ID: u8 = 113;
     pub const MIN_LENGTH: usize = 7;
 
     pub fn new(bytes: Vec<u8>) -> Result<MeshConfiguration, IeError> {
@@ -136,13 +134,8 @@ impl MeshConfiguration {
 }
 
 impl InformationElement for MeshConfiguration {
-    fn name(&self) -> &'static str {
-        Self::NAME
-    }
-
-    fn id(&self) -> u8 {
-        Self::ID
-    }
+    const NAME: &'static str = "Mesh Configuration";
+    const ID: u8 = 113;
 
     fn bytes(&self) -> &[u8] {
         self.bits.as_raw_slice()
@@ -198,3 +191,5 @@ impl InformationElement for MeshConfiguration {
         ]
     }
 }
+
+impl_display_for_ie!(MeshConfiguration);

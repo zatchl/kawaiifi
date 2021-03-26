@@ -96,15 +96,12 @@ impl TryFrom<u8> for DataRate {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SupportedRates {
     bytes: Vec<u8>,
 }
 
 impl SupportedRates {
-    pub const NAME: &'static str = "Supported Rates";
-    pub const ID: u8 = 1;
-
     pub fn new(bytes: Vec<u8>) -> SupportedRates {
         SupportedRates { bytes }
     }
@@ -144,13 +141,8 @@ impl SupportedRates {
 }
 
 impl InformationElement for SupportedRates {
-    fn name(&self) -> &'static str {
-        SupportedRates::NAME
-    }
-
-    fn id(&self) -> u8 {
-        SupportedRates::ID
-    }
+    const NAME: &'static str = "Supported Rates";
+    const ID: u8 = 1;
 
     fn bytes(&self) -> &[u8] {
         &self.bytes
@@ -179,15 +171,14 @@ impl InformationElement for SupportedRates {
     }
 }
 
-#[derive(Debug, Clone)]
+impl_display_for_ie!(SupportedRates);
+
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ExtendedSupportedRates {
     supported_rates: SupportedRates,
 }
 
 impl ExtendedSupportedRates {
-    pub const NAME: &'static str = "Extended Supported Rates";
-    pub const ID: u8 = 50;
-
     pub fn new(bytes: Vec<u8>) -> ExtendedSupportedRates {
         ExtendedSupportedRates {
             supported_rates: SupportedRates { bytes },
@@ -208,13 +199,8 @@ impl ExtendedSupportedRates {
 }
 
 impl InformationElement for ExtendedSupportedRates {
-    fn name(&self) -> &'static str {
-        Self::NAME
-    }
-
-    fn id(&self) -> u8 {
-        Self::ID
-    }
+    const NAME: &'static str = "Extended Supported Rates";
+    const ID: u8 = 50;
 
     fn bytes(&self) -> &[u8] {
         self.supported_rates.bytes()
@@ -224,3 +210,5 @@ impl InformationElement for ExtendedSupportedRates {
         self.supported_rates.information_fields()
     }
 }
+
+impl_display_for_ie!(ExtendedSupportedRates);

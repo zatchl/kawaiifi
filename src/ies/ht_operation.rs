@@ -2,14 +2,12 @@ use super::{Field, IeError, InformationElement};
 use crate::{ChannelWidth, ChannelWidths};
 use bitvec::prelude::*;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HtOperation {
     bits: BitVec<Lsb0, u8>,
 }
 
 impl HtOperation {
-    pub const NAME: &'static str = "HT Operation";
-    pub const ID: u8 = 61;
     pub const LENGTH: usize = 22;
 
     pub fn new(bytes: Vec<u8>) -> Result<HtOperation, IeError> {
@@ -36,6 +34,10 @@ impl InformationElement for HtOperation {
         HtOperation::ID
     }
 
+impl InformationElement for HtOperation {
+    const NAME: &'static str = "HT Operation";
+    const ID: u8 = 61;
+
     fn bytes(&self) -> &[u8] {
         &self.bits.as_raw_slice()
     }
@@ -45,8 +47,7 @@ impl InformationElement for HtOperation {
     }
 }
 
-impl Display for HtOperation {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "{}: {:?}", Self::NAME, self.bytes())
+impl_display_for_ie!(HtOperation);
+
     }
 }

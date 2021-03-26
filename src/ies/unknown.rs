@@ -1,6 +1,6 @@
 use super::{Field, InformationElement};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Unknown {
     bytes: Vec<u8>,
     id: u8,
@@ -8,21 +8,21 @@ pub struct Unknown {
 }
 
 impl Unknown {
-    pub const NAME: &'static str = "Unknown";
-    pub const ID: u8 = u8::MAX;
-
     pub fn new(bytes: Vec<u8>, id: u8, id_ext: Option<u8>) -> Unknown {
         Unknown { bytes, id, id_ext }
     }
 }
 
 impl InformationElement for Unknown {
-    fn name(&self) -> &'static str {
-        Unknown::NAME
-    }
+    const NAME: &'static str = "Unknown";
+    const ID: u8 = u8::MAX;
 
     fn id(&self) -> u8 {
         self.id
+    }
+
+    fn id_ext(&self) -> Option<u8> {
+        self.id_ext
     }
 
     fn bytes(&self) -> &[u8] {
@@ -33,3 +33,5 @@ impl InformationElement for Unknown {
         Vec::new()
     }
 }
+
+impl_display_for_ie!(Unknown);

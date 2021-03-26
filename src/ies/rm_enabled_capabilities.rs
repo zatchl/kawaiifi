@@ -1,14 +1,12 @@
 use super::{Field, IeError, InformationElement};
 use bitvec::prelude::*;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RmEnabledCapabilities {
     bits: BitVec<LocalBits, u8>,
 }
 
 impl RmEnabledCapabilities {
-    pub const NAME: &'static str = "RM Enabled Capabilities";
-    pub const ID: u8 = 70;
     pub const MIN_LENGTH: usize = 5;
 
     pub fn new(bytes: Vec<u8>) -> Result<RmEnabledCapabilities, IeError> {
@@ -147,13 +145,8 @@ impl RmEnabledCapabilities {
 }
 
 impl InformationElement for RmEnabledCapabilities {
-    fn name(&self) -> &'static str {
-        Self::NAME
-    }
-
-    fn id(&self) -> u8 {
-        Self::ID
-    }
+    const NAME: &'static str = "RM Enabled Capabilities";
+    const ID: u8 = 70;
 
     fn bytes(&self) -> &[u8] {
         self.bits.as_raw_slice()
@@ -275,3 +268,5 @@ impl InformationElement for RmEnabledCapabilities {
         ]
     }
 }
+
+impl_display_for_ie!(RmEnabledCapabilities);

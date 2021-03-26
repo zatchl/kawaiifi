@@ -1,13 +1,11 @@
 use super::{Field, InformationElement};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DsParameterSet {
     bytes: [u8; 1],
 }
 
 impl DsParameterSet {
-    pub const NAME: &'static str = "DS Parameter Set";
-    pub const ID: u8 = 3;
     pub const LENGTH: usize = 1;
 
     pub fn new(bytes: [u8; 1]) -> DsParameterSet {
@@ -20,13 +18,8 @@ impl DsParameterSet {
 }
 
 impl InformationElement for DsParameterSet {
-    fn name(&self) -> &'static str {
-        DsParameterSet::NAME
-    }
-
-    fn id(&self) -> u8 {
-        DsParameterSet::ID
-    }
+    const NAME: &'static str = "DS Parameter Set";
+    const ID: u8 = 3;
 
     fn bytes(&self) -> &[u8] {
         &self.bytes
@@ -36,3 +29,5 @@ impl InformationElement for DsParameterSet {
         vec![Field::new("Current Channel", self.channel_number())]
     }
 }
+
+impl_display_for_ie!(DsParameterSet);

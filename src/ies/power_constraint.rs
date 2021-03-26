@@ -1,13 +1,11 @@
 use super::{Field, InformationElement};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PowerConstraint {
     bytes: [u8; 1],
 }
 
 impl PowerConstraint {
-    pub const NAME: &'static str = "Power Constraint";
-    pub const ID: u8 = 32;
     pub const LENGTH: usize = 1;
 
     pub fn new(bytes: [u8; 1]) -> PowerConstraint {
@@ -20,13 +18,8 @@ impl PowerConstraint {
 }
 
 impl InformationElement for PowerConstraint {
-    fn name(&self) -> &'static str {
-        PowerConstraint::NAME
-    }
-
-    fn id(&self) -> u8 {
-        PowerConstraint::ID
-    }
+    const NAME: &'static str = "Power Constraint";
+    const ID: u8 = 32;
 
     fn bytes(&self) -> &[u8] {
         &self.bytes
@@ -39,3 +32,5 @@ impl InformationElement for PowerConstraint {
         )]
     }
 }
+
+impl_display_for_ie!(PowerConstraint);

@@ -1,3 +1,39 @@
+pub trait InformationElement {
+    const NAME: &'static str;
+    const ID: u8;
+    const ID_EXT: Option<u8> = None;
+
+    fn name(&self) -> &'static str {
+        Self::NAME
+    }
+
+    fn id(&self) -> u8 {
+        Self::ID
+    }
+
+    fn id_ext(&self) -> Option<u8> {
+        Self::ID_EXT
+    }
+
+    fn bytes(&self) -> &[u8];
+
+    fn information_fields(&self) -> Vec<Field>;
+}
+
+macro_rules! impl_display_for_ie {
+    ($ie_name:ident) => {
+        impl std::fmt::Display for $ie_name {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                for field in self.information_fields() {
+                    std::write!(f, "{}\r\n", field)?;
+                }
+
+                Ok(())
+            }
+        }
+    };
+}
+
 mod antenna;
 mod bss_load;
 mod country;
@@ -28,7 +64,6 @@ pub use antenna::Antenna;
 pub use bss_load::BssLoad;
 pub use country::Country;
 pub use ds_parameter_set::DsParameterSet;
-pub use enum_dispatch::enum_dispatch;
 pub use erp_info::ErpInfo;
 pub use extended_capabilities::ExtendedCapabilities;
 pub use ht_capabilities::HtCapabilities;
@@ -57,140 +92,187 @@ use std::io::{Cursor, Read};
 use std::{convert::TryInto, fmt::Display};
 use thiserror::Error;
 
-#[enum_dispatch]
-pub trait InformationElement {
-    fn name(&self) -> &'static str;
-    fn id(&self) -> u8;
-    fn id_ext(&self) -> Option<u8> {
-        None
-    }
-    fn bytes(&self) -> &[u8];
-    fn information_fields(&self) -> Vec<Field>;
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Ie {
+    Antenna(Antenna),
+    BssLoad(BssLoad),
+    Country(Country),
+    DsParameterSet(DsParameterSet),
+    ErpInfo(ErpInfo),
+    ExtendedCapabilities(ExtendedCapabilities),
+    ExtendedSupportedRates(ExtendedSupportedRates),
+    HeCapabilities(HeCapabilities),
+    HeOperation(HeOperation),
+    HtCapabilities(HtCapabilities),
+    HtOperation(HtOperation),
+    IbssParameterSet(IbssParameterSet),
+    MeasurementPilotTransmission(MeasurementPilotTransmission),
+    MeshConfiguration(MeshConfiguration),
+    MeshId(MeshId),
+    OverlappingBssScanParams(OverlappingBssScanParams),
+    PowerConstraint(PowerConstraint),
+    RmEnabledCapabilities(RmEnabledCapabilities),
+    Rsn(Rsn),
+    Ssid(Ssid),
+    SupportedRates(SupportedRates),
+    Tim(Tim),
+    TransmitPowerEnvelope(TransmitPowerEnvelope),
+    Unknown(Unknown),
+    VendorSpecific(VendorSpecific),
+    VhtCapabilities(VhtCapabilities),
+    VhtOperation(VhtOperation),
+    Wpa(Wpa),
 }
 
-pub const MAX_IE_ID: u8 = 255;
-
-#[enum_dispatch(InformationElement)]
-#[derive(Debug, Clone)]
-pub enum Ie {
-    Antenna,
-    BssLoad,
-    Country,
-    DsParameterSet,
-    ErpInfo,
-    ExtendedCapabilities,
-    ExtendedSupportedRates,
-    HtCapabilities,
-    HtOperation,
-    IbssParameterSet,
-    MeasurementPilotTransmission,
-    MeshConfiguration,
-    MeshId,
-    OverlappingBssScanParams,
-    PowerConstraint,
-    RmEnabledCapabilities,
-    Rsn,
-    Ssid,
-    SupportedRates,
-    Tim,
-    TransmitPowerEnvelope,
-    Unknown,
-    VendorSpecific,
-    VhtCapabilities,
-    VhtOperation,
-    Wpa,
+macro_rules! match_inner_ie {
+    ($ie:ident, $inner_ie:ident, $output:expr) => {
+        match $ie {
+            Ie::Antenna($inner_ie) => $output,
+            Ie::BssLoad($inner_ie) => $output,
+            Ie::Country($inner_ie) => $output,
+            Ie::DsParameterSet($inner_ie) => $output,
+            Ie::ErpInfo($inner_ie) => $output,
+            Ie::ExtendedCapabilities($inner_ie) => $output,
+            Ie::ExtendedSupportedRates($inner_ie) => $output,
+            Ie::HeCapabilities($inner_ie) => $output,
+            Ie::HeOperation($inner_ie) => $output,
+            Ie::HtCapabilities($inner_ie) => $output,
+            Ie::HtOperation($inner_ie) => $output,
+            Ie::IbssParameterSet($inner_ie) => $output,
+            Ie::MeasurementPilotTransmission($inner_ie) => $output,
+            Ie::MeshConfiguration($inner_ie) => $output,
+            Ie::MeshId($inner_ie) => $output,
+            Ie::OverlappingBssScanParams($inner_ie) => $output,
+            Ie::PowerConstraint($inner_ie) => $output,
+            Ie::RmEnabledCapabilities($inner_ie) => $output,
+            Ie::Rsn($inner_ie) => $output,
+            Ie::Ssid($inner_ie) => $output,
+            Ie::SupportedRates($inner_ie) => $output,
+            Ie::Tim($inner_ie) => $output,
+            Ie::TransmitPowerEnvelope($inner_ie) => $output,
+            Ie::Unknown($inner_ie) => $output,
+            Ie::VendorSpecific($inner_ie) => $output,
+            Ie::VhtCapabilities($inner_ie) => $output,
+            Ie::VhtOperation($inner_ie) => $output,
+            Ie::Wpa($inner_ie) => $output,
+        }
+    };
 }
 
 impl Ie {
     fn new(ie_data: Vec<u8>, ie_id: u8, ie_id_ext: Option<u8>) -> Result<Ie, IeError> {
         Ok(match ie_id {
-            Antenna::ID => Ie::from(Antenna::new(ie_data)?),
-            BssLoad::ID => Ie::from(BssLoad::new(ie_data)?),
-            Country::ID => Ie::from(Country::new(ie_data)?),
-            DsParameterSet::ID => Ie::from(DsParameterSet::new(ie_data.try_into().map_err(
-                |ie_data: Vec<u8>| IeError::InvalidLength {
-                    ie_name: DsParameterSet::NAME,
-                    expected_length: DsParameterSet::LENGTH,
-                    actual_length: ie_data.len(),
-                },
-            )?)),
-            ErpInfo::ID => Ie::from(ErpInfo::new(ie_data.try_into().map_err(
+            Antenna::ID => Ie::Antenna(Antenna::new(ie_data)?),
+            BssLoad::ID => Ie::BssLoad(BssLoad::new(ie_data)?),
+            Country::ID => Ie::Country(Country::new(ie_data)?),
+            DsParameterSet::ID => {
+                Ie::DsParameterSet(DsParameterSet::new(ie_data.try_into().map_err(
+                    |ie_data: Vec<u8>| IeError::InvalidLength {
+                        ie_name: DsParameterSet::NAME,
+                        expected_length: DsParameterSet::LENGTH,
+                        actual_length: ie_data.len(),
+                    },
+                )?))
+            }
+            ErpInfo::ID => Ie::ErpInfo(ErpInfo::new(ie_data.try_into().map_err(
                 |ie_data: Vec<u8>| IeError::InvalidLength {
                     ie_name: ErpInfo::NAME,
                     expected_length: ErpInfo::LENGTH,
                     actual_length: ie_data.len(),
                 },
             )?)),
-            ExtendedCapabilities::ID => Ie::from(ExtendedCapabilities::new(ie_data)),
-            ExtendedSupportedRates::ID => Ie::from(ExtendedSupportedRates::new(ie_data)),
-            HtCapabilities::ID => Ie::from(HtCapabilities::new(ie_data)?),
-            HtOperation::ID => Ie::from(HtOperation::new(ie_data)?),
-            IbssParameterSet::ID => Ie::from(IbssParameterSet::new(ie_data.try_into().map_err(
-                |ie_data: Vec<u8>| IeError::InvalidLength {
-                    ie_name: IbssParameterSet::NAME,
-                    expected_length: IbssParameterSet::LENGTH,
-                    actual_length: ie_data.len(),
-                },
-            )?)),
-            MeasurementPilotTransmission::ID => {
-                Ie::from(MeasurementPilotTransmission::new(ie_data)?)
+            ExtendedCapabilities::ID => {
+                Ie::ExtendedCapabilities(ExtendedCapabilities::new(ie_data))
             }
-            MeshConfiguration::ID => Ie::from(MeshConfiguration::new(ie_data)?),
-            MeshId::ID => Ie::from(MeshId::new(ie_data)),
-            OverlappingBssScanParams::ID => {
-                Ie::from(OverlappingBssScanParams::new(ie_data.try_into().map_err(
+            ExtendedSupportedRates::ID => {
+                Ie::ExtendedSupportedRates(ExtendedSupportedRates::new(ie_data))
+            }
+            HtCapabilities::ID => Ie::HtCapabilities(HtCapabilities::new(ie_data)?),
+            HtOperation::ID => Ie::HtOperation(HtOperation::new(ie_data)?),
+            IbssParameterSet::ID => {
+                Ie::IbssParameterSet(IbssParameterSet::new(ie_data.try_into().map_err(
                     |ie_data: Vec<u8>| IeError::InvalidLength {
-                        ie_name: OverlappingBssScanParams::NAME,
-                        expected_length: OverlappingBssScanParams::LENGTH,
+                        ie_name: IbssParameterSet::NAME,
+                        expected_length: IbssParameterSet::LENGTH,
                         actual_length: ie_data.len(),
                     },
                 )?))
             }
-            PowerConstraint::ID => Ie::from(PowerConstraint::new(ie_data.try_into().map_err(
-                |ie_data: Vec<u8>| IeError::InvalidLength {
-                    ie_name: PowerConstraint::NAME,
-                    expected_length: PowerConstraint::LENGTH,
-                    actual_length: ie_data.len(),
-                },
-            )?)),
-            RmEnabledCapabilities::ID => Ie::from(RmEnabledCapabilities::new(ie_data)?),
-            Rsn::ID => Ie::from(Rsn::new(ie_data)),
-            Ssid::ID => Ie::from(Ssid::new(ie_data)),
-            SupportedRates::ID => Ie::from(SupportedRates::new(ie_data)),
-            Tim::ID => Ie::from(Tim::new(ie_data)),
-            TransmitPowerEnvelope::ID => Ie::from(TransmitPowerEnvelope::new(ie_data)?),
+            MeasurementPilotTransmission::ID => {
+                Ie::MeasurementPilotTransmission(MeasurementPilotTransmission::new(ie_data)?)
+            }
+            MeshConfiguration::ID => Ie::MeshConfiguration(MeshConfiguration::new(ie_data)?),
+            MeshId::ID => Ie::MeshId(MeshId::new(ie_data)),
+            OverlappingBssScanParams::ID => Ie::OverlappingBssScanParams(
+                OverlappingBssScanParams::new(ie_data.try_into().map_err(|ie_data: Vec<u8>| {
+                    IeError::InvalidLength {
+                        ie_name: OverlappingBssScanParams::NAME,
+                        expected_length: OverlappingBssScanParams::LENGTH,
+                        actual_length: ie_data.len(),
+                    }
+                })?),
+            ),
+            PowerConstraint::ID => {
+                Ie::PowerConstraint(PowerConstraint::new(ie_data.try_into().map_err(
+                    |ie_data: Vec<u8>| IeError::InvalidLength {
+                        ie_name: PowerConstraint::NAME,
+                        expected_length: PowerConstraint::LENGTH,
+                        actual_length: ie_data.len(),
+                    },
+                )?))
+            }
+            RmEnabledCapabilities::ID => {
+                Ie::RmEnabledCapabilities(RmEnabledCapabilities::new(ie_data)?)
+            }
+            Rsn::ID => Ie::Rsn(Rsn::new(ie_data)),
+            Ssid::ID => Ie::Ssid(Ssid::new(ie_data)),
+            SupportedRates::ID => Ie::SupportedRates(SupportedRates::new(ie_data)),
+            Tim::ID => Ie::Tim(Tim::new(ie_data)),
+            TransmitPowerEnvelope::ID => {
+                Ie::TransmitPowerEnvelope(TransmitPowerEnvelope::new(ie_data)?)
+            }
             VendorSpecific::ID => {
                 if ie_data.starts_with(&Wpa::OUI) {
-                    Ie::from(Wpa::new(ie_data))
+                    Ie::Wpa(Wpa::new(ie_data))
                 } else {
-                    Ie::from(VendorSpecific::new(ie_data))
+                    Ie::VendorSpecific(VendorSpecific::new(ie_data))
                 }
             }
-            VhtCapabilities::ID => Ie::from(VhtCapabilities::new(ie_data)?),
-            VhtOperation::ID => Ie::from(VhtOperation::new(ie_data)?),
-            MAX_IE_ID => match ie_id_ext {
-                Some(HeCapabilities::ID_EXT) => Ie::from(HeCapabilities::new(ie_data)),
-                Some(HeOperation::ID_EXT) => Ie::from(HeOperation::new(ie_data)),
-                _ => Ie::from(Unknown::new(ie_data, ie_id, ie_id_ext)),
+            VhtCapabilities::ID => Ie::VhtCapabilities(VhtCapabilities::new(ie_data)?),
+            VhtOperation::ID => Ie::VhtOperation(VhtOperation::new(ie_data)?),
+            u8::MAX => match ie_id_ext {
+                HeCapabilities::ID_EXT => Ie::HeCapabilities(HeCapabilities::new(ie_data)),
+                HeOperation::ID_EXT => Ie::HeOperation(HeOperation::new(ie_data)),
+                _ => Ie::Unknown(Unknown::new(ie_data, ie_id, ie_id_ext)),
             },
-            _ => Ie::from(Unknown::new(ie_data, ie_id, ie_id_ext)),
+            _ => Ie::Unknown(Unknown::new(ie_data, ie_id, ie_id_ext)),
         })
+    }
+
+    pub fn name(&self) -> &'static str {
+        match_inner_ie!(self, ie, ie.name())
+    }
+
+    pub fn id(&self) -> u8 {
+        match_inner_ie!(self, ie, ie.id())
+    }
+
+    pub fn id_ext(&self) -> Option<u8> {
+        match_inner_ie!(self, ie, ie.id_ext())
+    }
+
+    pub fn bytes(&self) -> &[u8] {
+        match_inner_ie!(self, ie, ie.bytes())
+    }
+
+    pub fn information_fields(&self) -> Vec<Field> {
+        match_inner_ie!(self, ie, ie.information_fields())
     }
 }
 
 impl Display for Ie {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        for field in self.information_fields() {
-            write!(f, "{}\r\n", field)?;
-        }
-
-        Ok(())
-    }
-}
-
-impl PartialEq for Ie {
-    fn eq(&self, other: &Self) -> bool {
-        self.id() == other.id() && self.id_ext() == other.id_ext() && self.bytes() == other.bytes()
+        match_inner_ie!(self, ie, ie.fmt(f))
     }
 }
 
@@ -226,7 +308,7 @@ pub fn from_bytes(bytes: &[u8]) -> Result<Vec<Ie>, IeError> {
 
         // If the element ID is 255 then the next byte is the element ID extension
         let ie_id_ext = match ie_id {
-            MAX_IE_ID => bytes.read_u8().ok(),
+            u8::MAX => bytes.read_u8().ok(),
             _ => None,
         };
 

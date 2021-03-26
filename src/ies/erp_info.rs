@@ -1,14 +1,12 @@
 use super::{Field, InformationElement};
 use bitvec::prelude::*;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ErpInfo {
     bits: BitArray<LocalBits, [u8; 1]>,
 }
 
 impl ErpInfo {
-    pub const NAME: &'static str = "ERP Info";
-    pub const ID: u8 = 42;
     pub const LENGTH: usize = 1;
 
     pub fn new(bytes: [u8; 1]) -> ErpInfo {
@@ -31,13 +29,8 @@ impl ErpInfo {
 }
 
 impl InformationElement for ErpInfo {
-    fn name(&self) -> &'static str {
-        ErpInfo::NAME
-    }
-
-    fn id(&self) -> u8 {
-        ErpInfo::ID
-    }
+    const NAME: &'static str = "ERP Info";
+    const ID: u8 = 42;
 
     fn bytes(&self) -> &[u8] {
         self.bits.as_raw_slice()
@@ -51,3 +44,5 @@ impl InformationElement for ErpInfo {
         ]
     }
 }
+
+impl_display_for_ie!(ErpInfo);

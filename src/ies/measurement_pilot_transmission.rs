@@ -2,14 +2,12 @@ use super::{Field, IeError, InformationElement};
 use byteorder::ReadBytesExt;
 use std::io::{Cursor, Read};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MeasurementPilotTransmission {
     bytes: Vec<u8>,
 }
 
 impl MeasurementPilotTransmission {
-    pub const NAME: &'static str = "Measurement Pilot Transmission";
-    pub const ID: u8 = 66;
     pub const MIN_LENGTH: usize = 1;
 
     pub fn new(bytes: Vec<u8>) -> Result<MeasurementPilotTransmission, IeError> {
@@ -63,13 +61,8 @@ impl MeasurementPilotTransmission {
 }
 
 impl InformationElement for MeasurementPilotTransmission {
-    fn name(&self) -> &'static str {
-        Self::NAME
-    }
-
-    fn id(&self) -> u8 {
-        Self::ID
-    }
+    const NAME: &'static str = "Measurement Pilot Transmission";
+    const ID: u8 = 66;
 
     fn bytes(&self) -> &[u8] {
         &self.bytes
@@ -96,3 +89,5 @@ impl InformationElement for MeasurementPilotTransmission {
         fields
     }
 }
+
+impl_display_for_ie!(MeasurementPilotTransmission);
