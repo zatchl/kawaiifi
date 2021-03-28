@@ -1,4 +1,4 @@
-use super::{Field, InformationElement};
+use super::{Field, IeError, InformationElement};
 use std::convert::TryInto;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -9,8 +9,16 @@ pub struct OverlappingBssScanParams {
 impl OverlappingBssScanParams {
     pub const LENGTH: usize = 14;
 
-    pub fn new(bytes: [u8; Self::LENGTH]) -> OverlappingBssScanParams {
-        OverlappingBssScanParams { bytes }
+    pub fn new(bytes: Vec<u8>) -> Result<OverlappingBssScanParams, IeError> {
+        let bytes: [u8; Self::LENGTH] =
+            bytes
+                .try_into()
+                .map_err(|ie_data: Vec<u8>| IeError::InvalidLength {
+                    ie_name: Self::NAME,
+                    expected_length: Self::LENGTH,
+                    actual_length: ie_data.len(),
+                })?;
+        Ok(OverlappingBssScanParams::from(bytes))
     }
 
     pub fn obss_scan_passive_dwell_tu(&self) -> u16 {
@@ -84,6 +92,12 @@ impl InformationElement for OverlappingBssScanParams {
                 self.obss_scan_activity_threshold().to_string(),
             ),
         ]
+    }
+}
+
+impl From<[u8; Self::LENGTH]> for OverlappingBssScanParams {
+    fn from(bytes: [u8; Self::LENGTH]) -> Self {
+        OverlappingBssScanParams { bytes }
     }
 }
 

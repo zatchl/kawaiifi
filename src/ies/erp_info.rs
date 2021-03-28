@@ -1,5 +1,6 @@
-use super::{Field, InformationElement};
+use super::{Field, IeError, InformationElement};
 use bitvec::prelude::*;
+use std::convert::TryInto;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ErpInfo {
@@ -9,10 +10,16 @@ pub struct ErpInfo {
 impl ErpInfo {
     pub const LENGTH: usize = 1;
 
-    pub fn new(bytes: [u8; 1]) -> ErpInfo {
-        ErpInfo {
-            bits: BitArray::new(bytes),
-        }
+    pub fn new(bytes: Vec<u8>) -> Result<ErpInfo, IeError> {
+        let bytes: [u8; Self::LENGTH] =
+            bytes
+                .try_into()
+                .map_err(|ie_data: Vec<u8>| IeError::InvalidLength {
+                    ie_name: Self::NAME,
+                    expected_length: Self::LENGTH,
+                    actual_length: ie_data.len(),
+                })?;
+        Ok(ErpInfo::from(bytes))
     }
 
     pub fn non_erp_present(&self) -> bool {
@@ -42,6 +49,14 @@ impl InformationElement for ErpInfo {
             Field::new("Use Protection", self.use_protection()),
             Field::new("Barker Preamble Mode", self.barker_preamble_mode()),
         ]
+    }
+}
+
+impl From<[u8; Self::LENGTH]> for ErpInfo {
+    fn from(bytes: [u8; 1]) -> Self {
+        ErpInfo {
+            bits: BitArray::new(bytes),
+        }
     }
 }
 

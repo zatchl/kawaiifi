@@ -88,8 +88,8 @@ pub use wpa::Wpa;
 
 use crate::Field;
 use byteorder::ReadBytesExt;
+use std::fmt::Display;
 use std::io::{Cursor, Read};
-use std::{convert::TryInto, fmt::Display};
 use thiserror::Error;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -165,22 +165,8 @@ impl Ie {
             Antenna::ID => Ie::Antenna(Antenna::new(ie_data)?),
             BssLoad::ID => Ie::BssLoad(BssLoad::new(ie_data)?),
             Country::ID => Ie::Country(Country::new(ie_data)?),
-            DsParameterSet::ID => {
-                Ie::DsParameterSet(DsParameterSet::new(ie_data.try_into().map_err(
-                    |ie_data: Vec<u8>| IeError::InvalidLength {
-                        ie_name: DsParameterSet::NAME,
-                        expected_length: DsParameterSet::LENGTH,
-                        actual_length: ie_data.len(),
-                    },
-                )?))
-            }
-            ErpInfo::ID => Ie::ErpInfo(ErpInfo::new(ie_data.try_into().map_err(
-                |ie_data: Vec<u8>| IeError::InvalidLength {
-                    ie_name: ErpInfo::NAME,
-                    expected_length: ErpInfo::LENGTH,
-                    actual_length: ie_data.len(),
-                },
-            )?)),
+            DsParameterSet::ID => Ie::DsParameterSet(DsParameterSet::new(ie_data)?),
+            ErpInfo::ID => Ie::ErpInfo(ErpInfo::new(ie_data)?),
             ExtendedCapabilities::ID => {
                 Ie::ExtendedCapabilities(ExtendedCapabilities::new(ie_data))
             }
@@ -189,38 +175,16 @@ impl Ie {
             }
             HtCapabilities::ID => Ie::HtCapabilities(HtCapabilities::new(ie_data)?),
             HtOperation::ID => Ie::HtOperation(HtOperation::new(ie_data)?),
-            IbssParameterSet::ID => {
-                Ie::IbssParameterSet(IbssParameterSet::new(ie_data.try_into().map_err(
-                    |ie_data: Vec<u8>| IeError::InvalidLength {
-                        ie_name: IbssParameterSet::NAME,
-                        expected_length: IbssParameterSet::LENGTH,
-                        actual_length: ie_data.len(),
-                    },
-                )?))
-            }
+            IbssParameterSet::ID => Ie::IbssParameterSet(IbssParameterSet::new(ie_data)?),
             MeasurementPilotTransmission::ID => {
                 Ie::MeasurementPilotTransmission(MeasurementPilotTransmission::new(ie_data)?)
             }
             MeshConfiguration::ID => Ie::MeshConfiguration(MeshConfiguration::new(ie_data)?),
             MeshId::ID => Ie::MeshId(MeshId::new(ie_data)),
-            OverlappingBssScanParams::ID => Ie::OverlappingBssScanParams(
-                OverlappingBssScanParams::new(ie_data.try_into().map_err(|ie_data: Vec<u8>| {
-                    IeError::InvalidLength {
-                        ie_name: OverlappingBssScanParams::NAME,
-                        expected_length: OverlappingBssScanParams::LENGTH,
-                        actual_length: ie_data.len(),
-                    }
-                })?),
-            ),
-            PowerConstraint::ID => {
-                Ie::PowerConstraint(PowerConstraint::new(ie_data.try_into().map_err(
-                    |ie_data: Vec<u8>| IeError::InvalidLength {
-                        ie_name: PowerConstraint::NAME,
-                        expected_length: PowerConstraint::LENGTH,
-                        actual_length: ie_data.len(),
-                    },
-                )?))
+            OverlappingBssScanParams::ID => {
+                Ie::OverlappingBssScanParams(OverlappingBssScanParams::new(ie_data)?)
             }
+            PowerConstraint::ID => Ie::PowerConstraint(PowerConstraint::new(ie_data)?),
             RmEnabledCapabilities::ID => {
                 Ie::RmEnabledCapabilities(RmEnabledCapabilities::new(ie_data)?)
             }

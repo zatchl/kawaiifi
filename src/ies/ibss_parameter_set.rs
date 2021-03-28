@@ -1,4 +1,5 @@
-use super::{Field, InformationElement};
+use super::{Field, IeError, InformationElement};
+use std::convert::TryInto;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct IbssParameterSet {
@@ -8,8 +9,16 @@ pub struct IbssParameterSet {
 impl IbssParameterSet {
     pub const LENGTH: usize = 2;
 
-    pub fn new(bytes: [u8; Self::LENGTH]) -> IbssParameterSet {
-        IbssParameterSet { bytes }
+    pub fn new(bytes: Vec<u8>) -> Result<IbssParameterSet, IeError> {
+        let bytes: [u8; Self::LENGTH] =
+            bytes
+                .try_into()
+                .map_err(|ie_data: Vec<u8>| IeError::InvalidLength {
+                    ie_name: Self::NAME,
+                    expected_length: Self::LENGTH,
+                    actual_length: ie_data.len(),
+                })?;
+        Ok(IbssParameterSet::from(bytes))
     }
 
     pub fn atim_window_tu(&self) -> u16 {
@@ -30,6 +39,12 @@ impl InformationElement for IbssParameterSet {
             "ATIM Window",
             format!("{} TU", self.atim_window_tu()),
         )]
+    }
+}
+
+impl From<[u8; Self::LENGTH]> for IbssParameterSet {
+    fn from(bytes: [u8; Self::LENGTH]) -> Self {
+        IbssParameterSet { bytes }
     }
 }
 
