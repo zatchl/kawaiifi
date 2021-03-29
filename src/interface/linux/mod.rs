@@ -17,7 +17,6 @@ use neli::{
     nl::{NlPayload, Nlmsghdr},
     socket::NlSocketHandle,
     types::{Buffer, GenlBuffer, NlBuffer},
-    utils::U32Bitmask,
 };
 use std::{collections::HashSet, convert::TryFrom};
 
@@ -37,7 +36,7 @@ pub fn interfaces() -> HashSet<Interface> {
 
     // Attempt to create a generic netlink socket
     // If creating the socket fails, return an empty HashSet
-    let mut socket = match NlSocketHandle::connect(NlFamily::Generic, None, U32Bitmask::empty()) {
+    let mut socket = match NlSocketHandle::connect(NlFamily::Generic, None, &[]) {
         Ok(socket) => socket,
         _ => return HashSet::new(),
     };

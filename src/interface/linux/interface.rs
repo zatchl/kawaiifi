@@ -9,7 +9,6 @@ use neli::{
     nl::{NlPayload, Nlmsghdr},
     socket::NlSocketHandle,
     types::Buffer,
-    utils::U32Bitmask,
 };
 use std::{
     collections::{HashMap, HashSet},
@@ -55,7 +54,7 @@ impl Interface {
             Genlmsghdr::new(Nl80211Cmd::TriggerScan, 1, attr.into_iter().collect())
         };
 
-        let mut socket = NlSocketHandle::connect(NlFamily::Generic, None, U32Bitmask::empty())?;
+        let mut socket = NlSocketHandle::connect(NlFamily::Generic, None, &[])?;
 
         // Create a netlink message header with the generic netlink message header as its payload
         let nl_msghdr = {
@@ -74,7 +73,7 @@ impl Interface {
         // Join the scan multicast group to receive a notification when the scan is completed
         let id = socket
             .resolve_nl_mcast_group(super::NL80211_FAMILY_NAME, super::SCAN_MULTICAST_NAME)?;
-        socket.add_mcast_membership(U32Bitmask::from(id))?;
+        socket.add_mcast_membership(&[id])?;
 
         // If we receive a message with a payload containing Nl80211Cmd::NewScanResults, we know
         // a new scan has successfully completed and we can get the scan results by calling
@@ -103,7 +102,7 @@ impl Interface {
             Genlmsghdr::new(Nl80211Cmd::GetScan, 1, attr.into_iter().collect())
         };
 
-        let mut socket = NlSocketHandle::connect(NlFamily::Generic, None, U32Bitmask::empty())?;
+        let mut socket = NlSocketHandle::connect(NlFamily::Generic, None, &[])?;
 
         // Create a netlink message header with the generic netlink message header as its payload
         let nl_msghdr = {
