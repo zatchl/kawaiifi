@@ -35,6 +35,7 @@ macro_rules! impl_display_for_ie {
 }
 
 mod antenna;
+mod ap_channel_report;
 mod bss_load;
 mod country;
 mod ds_parameter_set;
@@ -61,6 +62,7 @@ mod vht_operation;
 mod wpa;
 
 pub use antenna::Antenna;
+pub use ap_channel_report::ApChannelReport;
 pub use bss_load::BssLoad;
 pub use country::Country;
 pub use ds_parameter_set::DsParameterSet;
@@ -95,6 +97,7 @@ use thiserror::Error;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Ie {
     Antenna(Antenna),
+    ApChannelReport(ApChannelReport),
     BssLoad(BssLoad),
     Country(Country),
     DsParameterSet(DsParameterSet),
@@ -128,6 +131,7 @@ macro_rules! match_inner_ie {
     ($ie:ident, $inner_ie:ident, $output:expr) => {
         match $ie {
             Ie::Antenna($inner_ie) => $output,
+            Ie::ApChannelReport($inner_ie) => $output,
             Ie::BssLoad($inner_ie) => $output,
             Ie::Country($inner_ie) => $output,
             Ie::DsParameterSet($inner_ie) => $output,
@@ -163,6 +167,7 @@ impl Ie {
     fn new(ie_data: Vec<u8>, ie_id: u8, ie_id_ext: Option<u8>) -> Result<Ie, IeError> {
         Ok(match ie_id {
             Antenna::ID => Ie::Antenna(Antenna::new(ie_data)?),
+            ApChannelReport::ID => Ie::ApChannelReport(ApChannelReport::new(ie_data)?),
             BssLoad::ID => Ie::BssLoad(BssLoad::new(ie_data)?),
             Country::ID => Ie::Country(Country::new(ie_data)?),
             DsParameterSet::ID => Ie::DsParameterSet(DsParameterSet::new(ie_data)?),
