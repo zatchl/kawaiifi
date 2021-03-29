@@ -55,6 +55,7 @@ mod ssid;
 mod supported_rates;
 mod tim;
 mod transmit_power_envelope;
+mod twenty_forty_bss_coexistence;
 mod unknown;
 mod vendor_specific;
 mod vht_capabilities;
@@ -82,6 +83,7 @@ pub use ssid::Ssid;
 pub use supported_rates::{DataRate, ExtendedSupportedRates, SupportedRates};
 pub use tim::Tim;
 pub use transmit_power_envelope::TransmitPowerEnvelope;
+pub use twenty_forty_bss_coexistence::TwentyFortyBssCoexistence;
 pub use unknown::Unknown;
 pub use vendor_specific::VendorSpecific;
 pub use vht_capabilities::VhtCapabilities;
@@ -120,6 +122,7 @@ pub enum Ie {
     SupportedRates(SupportedRates),
     Tim(Tim),
     TransmitPowerEnvelope(TransmitPowerEnvelope),
+    TwentyFortyBssCoexistence(TwentyFortyBssCoexistence),
     Unknown(Unknown),
     VendorSpecific(VendorSpecific),
     VhtCapabilities(VhtCapabilities),
@@ -154,6 +157,7 @@ macro_rules! match_inner_ie {
             Ie::SupportedRates($inner_ie) => $output,
             Ie::Tim($inner_ie) => $output,
             Ie::TransmitPowerEnvelope($inner_ie) => $output,
+            Ie::TwentyFortyBssCoexistence($inner_ie) => $output,
             Ie::Unknown($inner_ie) => $output,
             Ie::VendorSpecific($inner_ie) => $output,
             Ie::VhtCapabilities($inner_ie) => $output,
@@ -199,6 +203,9 @@ impl Ie {
             Tim::ID => Ie::Tim(Tim::new(ie_data)),
             TransmitPowerEnvelope::ID => {
                 Ie::TransmitPowerEnvelope(TransmitPowerEnvelope::new(ie_data)?)
+            }
+            TwentyFortyBssCoexistence::ID => {
+                Ie::TwentyFortyBssCoexistence(TwentyFortyBssCoexistence::new(ie_data)?)
             }
             VendorSpecific::ID => {
                 if ie_data.starts_with(&Wpa::OUI) {
