@@ -1,8 +1,12 @@
 use crate::Ie;
-use enumflags2::BitFlags;
-use std::{convert::From, ops::Deref};
+use derive_more::{
+    BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Deref, DerefMut, From, Not,
+};
+use enumflags2::{bitflags, BitFlags};
+use std::convert::From;
 
-#[derive(BitFlags, Copy, Clone, Debug, PartialEq)]
+#[bitflags]
+#[derive(Copy, Clone, Debug, PartialOrd, Ord, PartialEq, Eq)]
 #[repr(u8)]
 pub enum SecurityProtocol {
     WEP = 1 << 0,
@@ -12,14 +16,28 @@ pub enum SecurityProtocol {
 }
 
 // Use the Newtype pattern to create a type alias (SecurityProtocols) and implement the From trait
-#[derive(Debug, Copy, Clone)]
+#[derive(
+    Debug,
+    Copy,
+    Clone,
+    PartialEq,
+    Eq,
+    Deref,
+    DerefMut,
+    BitAnd,
+    BitAndAssign,
+    BitOr,
+    BitOrAssign,
+    BitXor,
+    BitXorAssign,
+    From,
+    Not,
+)]
 pub struct SecurityProtocols(BitFlags<SecurityProtocol>);
 
-impl Deref for SecurityProtocols {
-    type Target = BitFlags<SecurityProtocol>;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
+impl PartialEq<BitFlags<SecurityProtocol, u8>> for SecurityProtocols {
+    fn eq(&self, other: &BitFlags<SecurityProtocol, u8>) -> bool {
+        self.0.eq(other)
     }
 }
 
