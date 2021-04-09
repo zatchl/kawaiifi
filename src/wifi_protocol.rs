@@ -2,11 +2,14 @@ use crate::{
     ies::{DataRate, SupportedRates},
     Ie,
 };
-use enumflags2::BitFlags;
+use derive_more::{
+    BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Deref, DerefMut, From, Not,
+};
+use enumflags2::{bitflags, BitFlags};
 use std::fmt::Display;
-use std::{ops::Deref, ops::DerefMut};
 
-#[derive(BitFlags, Copy, Clone, Debug, PartialEq, Ord, PartialOrd, Eq)]
+#[bitflags]
+#[derive(Copy, Clone, Debug, PartialEq, Ord, PartialOrd, Eq)]
 #[repr(u16)]
 pub enum WifiProtocol {
     A = 1 << 0,
@@ -31,20 +34,28 @@ impl Display for WifiProtocol {
 }
 
 // Use the Newtype pattern to create a type alias (WifiProtocols) and implement the From trait
-#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+#[derive(
+    Debug,
+    Copy,
+    Clone,
+    Eq,
+    PartialEq,
+    Deref,
+    DerefMut,
+    BitAnd,
+    BitAndAssign,
+    BitOr,
+    BitOrAssign,
+    BitXor,
+    BitXorAssign,
+    From,
+    Not,
+)]
 pub struct WifiProtocols(BitFlags<WifiProtocol>);
 
-impl Deref for WifiProtocols {
-    type Target = BitFlags<WifiProtocol>;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl DerefMut for WifiProtocols {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
+impl PartialEq<BitFlags<WifiProtocol, u16>> for WifiProtocols {
+    fn eq(&self, other: &BitFlags<WifiProtocol, u16>) -> bool {
+        self.0.eq(other)
     }
 }
 
