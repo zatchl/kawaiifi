@@ -1,8 +1,12 @@
 use crate::Ie;
-use enumflags2::BitFlags;
+use derive_more::{
+    BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Deref, DerefMut, From, Not,
+};
+use enumflags2::{bitflags, BitFlags};
 use std::{convert::From, fmt::Display};
 
-#[derive(BitFlags, Copy, Clone, Debug, PartialEq, Ord, PartialOrd, Eq)]
+#[bitflags]
+#[derive(Copy, Clone, Debug, PartialEq, Ord, PartialOrd, Eq)]
 #[repr(u8)]
 pub enum ChannelWidth {
     TwentyMhz = 1 << 0,
@@ -22,7 +26,7 @@ impl From<&[Ie]> for ChannelWidth {
                 Ie::HtOperation(ht_operation) => Some(ht_operation.sta_channel_width()),
                 _ => None,
             })
-            .unwrap_or(BitFlags::from(ChannelWidth::TwentyMhz));
+            .unwrap_or(ChannelWidth::TwentyMhz.into());
 
         let (vht_channel_widths, channel_center_segment_zero, channel_center_segment_one) = ies
             .iter()
@@ -34,9 +38,9 @@ impl From<&[Ie]> for ChannelWidth {
                 )),
                 _ => None,
             })
-            .unwrap_or((BitFlags::from(ChannelWidth::TwentyMhz), 0, 0));
+            .unwrap_or((ChannelWidth::TwentyMhz.into(), 0, 0));
 
-        if ht_channel_widths == BitFlags::from(ChannelWidth::TwentyMhz) {
+        if ht_channel_widths == ChannelWidths::from(ChannelWidth::TwentyMhz) {
             return ChannelWidth::TwentyMhz;
         }
 
@@ -63,7 +67,7 @@ impl From<&[Ie]> for ChannelWidth {
             return ChannelWidth::OneSixtyMhz;
         }
 
-        if vht_channel_widths
+        if vht_channel_widths.0
             == ChannelWidth::EightyMhz
                 | ChannelWidth::EightyPlusEightyMhz
                 | ChannelWidth::OneSixtyMhz
@@ -73,11 +77,11 @@ impl From<&[Ie]> for ChannelWidth {
             return ChannelWidth::EightyPlusEightyMhz;
         }
 
-        if vht_channel_widths == ChannelWidth::EightyPlusEightyMhz {
+        if vht_channel_widths == ChannelWidths::from(ChannelWidth::EightyPlusEightyMhz) {
             return ChannelWidth::EightyPlusEightyMhz;
         }
 
-        if vht_channel_widths == ChannelWidth::OneSixtyMhz {
+        if vht_channel_widths == ChannelWidths::from(ChannelWidth::OneSixtyMhz) {
             return ChannelWidth::OneSixtyMhz;
         }
 
@@ -98,4 +102,51 @@ impl Display for ChannelWidth {
     }
 }
 
-pub type ChannelWidths = BitFlags<ChannelWidth>;
+#[derive(
+    Debug,
+    Copy,
+    Clone,
+    PartialEq,
+    Eq,
+    Deref,
+    DerefMut,
+    BitAnd,
+    BitAndAssign,
+    BitOr,
+    BitOrAssign,
+    BitXor,
+    BitXorAssign,
+    From,
+    Not,
+)]
+#[from(forward)]
+pub struct ChannelWidths(BitFlags<ChannelWidth>);
+
+impl PartialEq<BitFlags<ChannelWidth, u8>> for ChannelWidths {
+    fn eq(&self, other: &BitFlags<ChannelWidth, u8>) -> bool {
+        self.0.eq(other)
+    }
+}
+
+impl Display for ChannelWidths {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut channel_widths = Vec::new();
+
+        for channel_width in [
+            ChannelWidth::TwentyMhz,
+            ChannelWidth::TwentyTwoMhz,
+            ChannelWidth::FortyMhz,
+            ChannelWidth::EightyMhz,
+            ChannelWidth::EightyPlusEightyMhz,
+            ChannelWidth::OneSixtyMhz,
+        ]
+        .iter()
+        {
+            if self.contains(*channel_width) {
+                channel_widths.push(channel_width.to_string());
+            }
+        }
+
+        write!(f, "{}", channel_widths.join(", "))
+    }
+}

@@ -192,9 +192,9 @@ impl HtCapabilities {
 
     pub fn supported_channel_width_set(&self) -> ChannelWidths {
         if self.bits[1] {
-            ChannelWidth::TwentyMhz | ChannelWidth::FortyMhz
+            (ChannelWidth::TwentyMhz | ChannelWidth::FortyMhz).into()
         } else {
-            ChannelWidths::from_flag(ChannelWidth::TwentyMhz)
+            ChannelWidth::TwentyMhz.into()
         }
     }
 
@@ -431,20 +431,7 @@ impl InformationElement for HtCapabilities {
                     Field::new("LDPC Coding Capability", self.ldpc_coding_capability()),
                     Field::new(
                         "Supported Channel Width Set",
-                        format!(
-                            "{}",
-                            if self.supported_channel_width_set()
-                                == ChannelWidths::from_flag(ChannelWidth::TwentyMhz)
-                            {
-                                "20 MHz"
-                            } else if self.supported_channel_width_set()
-                                == (ChannelWidth::TwentyMhz | ChannelWidth::FortyMhz)
-                            {
-                                "20 or 40 MHz"
-                            } else {
-                                "Unknown"
-                            },
-                        ),
+                        self.supported_channel_width_set(),
                     ),
                     Field::new("SM Power Save", format!("{:?}", self.sm_power_save())),
                     Field::new("HT-Greenfield", self.ht_greenfield()),
